@@ -1,12 +1,8 @@
 .env
-__pycache__/
-*.pyc
-*.pyo
+.dev.vars
 .DS_Store
-.venv/
-venv/
-*.egg-info/
+
+node_modules/
+.wrangler/
 dist/
 build/
-
-

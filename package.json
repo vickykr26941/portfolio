@@ -1,0 +1,23 @@
+{
+  "name": "vicky-portfolio-agent",
+  "version": "3.0.0",
+  "description": "AI portfolio chatbot — VickyBot, powered by Groq, deployed on Cloudflare Pages",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler pages dev",
+    "deploy": "wrangler pages deploy",
+    "tail": "wrangler pages deployment tail",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "groq-sdk": "^0.7.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250501.0",
+    "typescript": "^5.4.5",
+    "wrangler": "^3.80.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
