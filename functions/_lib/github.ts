@@ -1,6 +1,6 @@
 const GITHUB_USERNAME = "vickykr26941";
 const GITHUB_API = "https://api.github.com";
-const CACHE_TTL_SECONDS = 300; // 5 min edge cache
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 min in-memory cache per isolate
 
 interface GhRepo {
   name: string;
@@ -22,60 +22,92 @@ export interface GitHubSnapshot {
   repos: GhRepo[];
 }
 
+// Module-level cache (lives as long as the isolate stays warm).
+// Edge `caches.default` had issues with the GitHub API response headers,
+// so we keep this simple and in-memory — good enough for portfolio traffic.
+const memCache = new Map<string, { ts: number; data: unknown }>();
+
+function cacheGet<T>(key: string): T | null {
+  const hit = memCache.get(key);
+  if (!hit) return null;
+  if (Date.now() - hit.ts > CACHE_TTL_MS) {
+    memCache.delete(key);
+    return null;
+  }
+  return hit.data as T;
+}
+
+function cacheSet(key: string, data: unknown): void {
+  memCache.set(key, { ts: Date.now(), data });
+}
+
 function headers(token?: string): HeadersInit {
-  const h: Record<string, string> = { Accept: "application/vnd.github+json" };
+  const h: Record<string, string> = {
+    Accept: "application/vnd.github+json",
+    // GitHub requires a User-Agent on every request — Cloudflare's default UA
+    // works but being explicit avoids occasional 403s.
+    "User-Agent": "vicky-portfolio-agent",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
   if (token) h.Authorization = `Bearer ${token}`;
   return h;
 }
 
-async function cachedFetch(url: string, init: RequestInit): Promise<Response> {
-  const cache = caches.default;
-  const cacheKey = new Request(url, { method: "GET" });
-  const hit = await cache.match(cacheKey);
-  if (hit) return hit;
-
-  const resp = await fetch(url, init);
-  if (resp.ok) {
-    const cloned = new Response(resp.clone().body, resp);
-    cloned.headers.set("Cache-Control", `public, max-age=${CACHE_TTL_SECONDS}`);
-    await cache.put(cacheKey, cloned);
+async function fetchJson<T>(url: string, token?: string): Promise<T | null> {
+  try {
+    const resp = await fetch(url, { headers: headers(token) });
+    if (!resp.ok) {
+      const body = await resp.text().catch(() => "");
+      console.error(`[github] ${url} → ${resp.status}: ${body.slice(0, 200)}`);
+      return null;
+    }
+    return (await resp.json()) as T;
+  } catch (e: any) {
+    console.error(`[github] fetch threw for ${url}: ${e?.message ?? e}`);
+    return null;
   }
-  return resp;
 }
 
 export async function fetchGitHub(token?: string): Promise<GitHubSnapshot> {
-  try {
-    const [profileResp, reposResp] = await Promise.all([
-      cachedFetch(`${GITHUB_API}/users/${GITHUB_USERNAME}`, { headers: headers(token) }),
-      cachedFetch(
-        `${GITHUB_API}/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100&type=public`,
-        { headers: headers(token) }
-      ),
-    ]);
+  const cacheKey = `snapshot:${token ? "auth" : "anon"}`;
+  const cached = cacheGet<GitHubSnapshot>(cacheKey);
+  if (cached) return cached;
 
-    const profileJson = profileResp.ok ? ((await profileResp.json()) as any) : {};
-    const reposJson = reposResp.ok ? ((await reposResp.json()) as any[]) : [];
+  const [profileJson, reposJson] = await Promise.all([
+    fetchJson<any>(`${GITHUB_API}/users/${GITHUB_USERNAME}`, token),
+    fetchJson<any[]>(
+      `${GITHUB_API}/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100&type=public`,
+      token
+    ),
+  ]);
 
-    return {
-      profile: {
-        public_repos: profileJson.public_repos,
-        followers: profileJson.followers,
-        bio: profileJson.bio,
-      },
-      repos: reposJson
-        .filter((r) => !r.fork) // hide forks from the listing
-        .map((r) => ({
-          name: r.name,
-          description: r.description || "No description",
-          url: r.html_url,
-          stars: r.stargazers_count,
-          language: r.language || "Unknown",
-          updated: (r.updated_at || "").slice(0, 10),
-        })),
-    };
-  } catch {
-    return { profile: {}, repos: [] };
+  const snapshot: GitHubSnapshot = {
+    profile: {
+      public_repos: profileJson?.public_repos,
+      followers: profileJson?.followers,
+      bio: profileJson?.bio,
+    },
+    repos: (reposJson ?? [])
+      .filter((r) => !r.fork)
+      .map((r) => ({
+        name: r.name,
+        description: r.description || "No description",
+        url: r.html_url,
+        stars: r.stargazers_count,
+        language: r.language || "Unknown",
+        updated: (r.updated_at || "").slice(0, 10),
+      })),
+  };
+
+  console.log(
+    `[github] snapshot built: ${snapshot.repos.length} repos, public_repos=${snapshot.profile.public_repos ?? "?"}`
+  );
+
+  // Only cache a successful snapshot (avoid pinning an empty result for 5 min).
+  if (snapshot.repos.length > 0 || snapshot.profile.public_repos) {
+    cacheSet(cacheKey, snapshot);
   }
+  return snapshot;
 }
 
 export function formatGitHubBlock(snapshot: GitHubSnapshot): string {
