@@ -56,7 +56,8 @@ header {
   padding-left: max(16px, env(safe-area-inset-left));
   padding-right: max(16px, env(safe-area-inset-right));
 }
-.h-left { display:flex; align-items:center; gap:10px; min-width:0; }
+.h-left { display:flex; align-items:center; gap:10px; min-width:0; text-decoration:none; color:inherit; cursor:pointer; }
+.h-left:hover .h-info h1 { color:var(--g); transition: color 0.18s; }
 .avatar {
   width:36px; height:36px; border-radius:9px; flex-shrink:0;
   background: linear-gradient(135deg,#1a2540,#0f1c30); border: 1px solid var(--b2);
@@ -220,13 +221,13 @@ header {
 <div class="blob blob-2"></div>
 
 <header>
-  <div class="h-left">
+  <a href="/" class="h-left" title="Reload">
     <div class="avatar">VK</div>
     <div class="h-info">
       <h1>Vicky Kumar</h1>
       <p>⚡ AI Portfolio Agent</p>
     </div>
-  </div>
+  </a>
   <div class="h-right">
     <a href="mailto:vickykr26941@gmail.com" class="hbtn" title="Email">
       <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>

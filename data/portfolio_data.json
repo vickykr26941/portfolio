@@ -79,21 +79,21 @@
       "name": "Medical AI Health Assessment",
       "year": 2025,
       "tech": ["Claude AI API", "Python", "Django", "React", "JavaScript"],
-      "github": "https://github.com/vickykumar",
+      "github": "https://github.com/vickykr26941/ai-health-assesment",
       "description": "Web application integrating Claude AI for dynamic health assessment questionnaires generating personalized medical insights. Automated medical summary generation with diagnosis, medications, and recommendations to assist healthcare professionals. Designed to optimize OPD efficiency and improve patient-doctor interaction workflows."
     },
     {
       "name": "Generic Webhook Dispatch System",
       "year": 2025,
       "tech": ["GoLang", "AWS SQS", "SNS", "Lambda", "REST APIs"],
-      "github": "https://github.com/vickykumar",
+      "github": "",
       "description": "Generic webhook backend microservice in Go supporting event delivery across multiple protocols. Clients can register webhooks for HTTP/HTTPS, AWS SQS, SNS, and Lambda. Uses async dispatch architecture with Go routines and channels. Decouples request ingestion from delivery execution for high reliability and scalability."
     },
     {
       "name": "Student Monitoring System with Facial Recognition",
       "year": 2022,
       "tech": ["MySQL", "Python", "Django", "JavaScript", "OpenCV"],
-      "github": "https://github.com/vickykumar",
+      "github": "https://github.com/vickykr26941/Attendance-System",
       "description": "Multi-role system with class management, assignment distribution, and automated attendance tracking using facial recognition. Includes manual override capability, scheduled email notifications, and comprehensive student management with enrollment, assignment submission, and progress tracking."
     }
   ],
