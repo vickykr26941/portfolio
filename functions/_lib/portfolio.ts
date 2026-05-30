@@ -75,10 +75,12 @@ export function formatExperience(experience: Job[]): string {
 
 export function formatProjects(projects: Project[]): string {
   return projects
-    .map(
-      (p) =>
-        `[${p.name} | ${p.year}]\nTech: ${p.tech.join(", ")}\nGitHub: ${p.github}\nWhat it does: ${p.description}`
-    )
+    .map((p) => {
+      const lines = [`[${p.name} | ${p.year}]`, `Tech: ${p.tech.join(", ")}`];
+      if (p.github?.trim()) lines.push(`GitHub: ${p.github}`);
+      lines.push(`What it does: ${p.description}`);
+      return lines.join("\n");
+    })
     .join("\n\n");
 }
 
