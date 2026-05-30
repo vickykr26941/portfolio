@@ -48,7 +48,7 @@ export async function fetchGitHub(token?: string): Promise<GitHubSnapshot> {
     const [profileResp, reposResp] = await Promise.all([
       cachedFetch(`${GITHUB_API}/users/${GITHUB_USERNAME}`, { headers: headers(token) }),
       cachedFetch(
-        `${GITHUB_API}/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=20&type=public`,
+        `${GITHUB_API}/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100&type=public`,
         { headers: headers(token) }
       ),
     ]);
@@ -62,14 +62,16 @@ export async function fetchGitHub(token?: string): Promise<GitHubSnapshot> {
         followers: profileJson.followers,
         bio: profileJson.bio,
       },
-      repos: reposJson.map((r) => ({
-        name: r.name,
-        description: r.description || "No description",
-        url: r.html_url,
-        stars: r.stargazers_count,
-        language: r.language || "Unknown",
-        updated: (r.updated_at || "").slice(0, 10),
-      })),
+      repos: reposJson
+        .filter((r) => !r.fork) // hide forks from the listing
+        .map((r) => ({
+          name: r.name,
+          description: r.description || "No description",
+          url: r.html_url,
+          stars: r.stargazers_count,
+          language: r.language || "Unknown",
+          updated: (r.updated_at || "").slice(0, 10),
+        })),
     };
   } catch {
     return { profile: {}, repos: [] };
@@ -82,10 +84,8 @@ export function formatGitHubBlock(snapshot: GitHubSnapshot): string {
   }
   const header = `Public Repos: ${snapshot.profile.public_repos ?? "N/A"} | Followers: ${snapshot.profile.followers ?? "N/A"}`;
   if (!snapshot.repos.length) return header;
-  const lines = snapshot.repos
-    .slice(0, 10)
-    .map(
-      (r) => `  • ${r.name} [${r.language}] ⭐${r.stars} — ${r.description} | ${r.url}`
-    );
-  return `${header}\nTop Repositories:\n${lines.join("\n")}`;
+  const lines = snapshot.repos.map(
+    (r) => `  • ${r.name} [${r.language}] ⭐${r.stars} — ${r.url}`
+  );
+  return `${header}\nAll Public Repositories (most recently updated first):\n${lines.join("\n")}`;
 }
