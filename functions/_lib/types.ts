@@ -9,7 +9,10 @@ export interface ChatMessage {
   content: string;
 }
 
+export type ChatMode = "chat" | "voice" | "resume-match";
+
 export interface ChatRequestBody {
   message: string;
   history?: ChatMessage[];
+  mode?: ChatMode;
 }

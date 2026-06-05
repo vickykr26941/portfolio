@@ -1,5 +1,7 @@
-import type { Env, ChatRequestBody } from "../_lib/types";
-import { buildMessages, completionParams, defaultModel, makeGroq } from "../_lib/agent";
+import type { Env, ChatRequestBody, ChatMode } from "../_lib/types";
+import { buildMessages, completionParamsForMode, defaultModel, makeGroq } from "../_lib/agent";
+
+const VALID_MODES: ChatMode[] = ["chat", "voice", "resume-match"];
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   let body: ChatRequestBody;
@@ -13,13 +15,17 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     return json(400, { detail: "Message cannot be empty" });
   }
 
+  const mode: ChatMode = VALID_MODES.includes(body.mode as ChatMode)
+    ? (body.mode as ChatMode)
+    : "chat";
+
   try {
     const groq = makeGroq(env);
-    const messages = await buildMessages(env, body.message, body.history ?? []);
+    const messages = await buildMessages(env, body.message, body.history ?? [], mode);
     const completion = await groq.chat.completions.create({
       model: defaultModel(env),
       messages,
-      ...completionParams,
+      ...completionParamsForMode(mode),
       stream: false,
     });
     const reply = completion.choices[0]?.message?.content?.trim() ?? "";
