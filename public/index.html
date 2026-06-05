@@ -667,9 +667,243 @@ footer a { color: var(--tx2); }
 @keyframes skel { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 .skel-line { height: 14px; margin-bottom: 8px; }
 .skel-line:last-child { margin-bottom: 0; }
+
+/* ══════════════════════════════════════════════════════════════════
+   PHASE 2.5 — LINEAR-TIER POLISH
+   custom cursor · spotlight · magnetic · stagger · scroll progress
+   · section dots · 3D tilt · reveal-on-scroll · counters · ⌘K
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── CUSTOM CURSOR (dot + ring) ──────────────────────────────────── */
+.cursor-dot, .cursor-ring {
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9999;
+  transition: opacity 0.2s, border-color 0.2s, background 0.2s;
+  mix-blend-mode: normal;
+}
+.cursor-dot {
+  width: 6px; height: 6px;
+  background: var(--g); border-radius: 50%;
+  margin: -3px 0 0 -3px;
+  will-change: transform;
+}
+.cursor-ring {
+  width: 30px; height: 30px;
+  border: 1.5px solid var(--tx2);
+  border-radius: 50%;
+  margin: -15px 0 0 -15px;
+  will-change: transform;
+}
+.cursor-ring.hover {
+  border-color: var(--g);
+  background: rgba(10, 138, 91, 0.05);
+  transform: scale(1.65);
+}
+.cursor-ring.hover-text { transform: scale(0.6); border-color: var(--tx); }
+.cursor-hidden .cursor-dot, .cursor-hidden .cursor-ring { opacity: 0; }
+/* Hide custom cursor on touch / coarse-pointer devices */
+@media (hover: none), (pointer: coarse) {
+  .cursor-dot, .cursor-ring { display: none !important; }
+}
+
+/* ── SCROLL PROGRESS BAR ─────────────────────────────────────────── */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 2px; z-index: 100;
+  background: transparent;
+}
+.scroll-progress .bar {
+  height: 100%; width: 0;
+  background: linear-gradient(to right, var(--g), #13a26c);
+  transition: width 0.08s linear;
+  box-shadow: 0 0 8px rgba(10, 138, 91, 0.45);
+}
+
+/* ── SECTION NAV DOTS (left sticky) ──────────────────────────────── */
+.section-nav {
+  position: fixed; left: 18px; top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex; flex-direction: column; gap: 14px;
+}
+@media (max-width: 1180px) { .section-nav { display: none; } }
+.section-nav-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--b2);
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.2, 0.9, 0.2, 1);
+  position: relative; border: none; padding: 0;
+}
+.section-nav-dot::before {
+  content: attr(data-label);
+  position: absolute; left: 18px; top: 50%; transform: translateY(-50%) translateX(-4px);
+  font-family: var(--mono);
+  font-size: 11px; color: var(--tx2);
+  white-space: nowrap; pointer-events: none;
+  background: var(--bg); padding: 4px 10px; border-radius: 6px;
+  border: 1px solid var(--b1); box-shadow: var(--shadow);
+  opacity: 0; transition: all 0.18s;
+}
+.section-nav-dot:hover::before { opacity: 1; transform: translateY(-50%) translateX(0); }
+.section-nav-dot:hover { background: var(--tx2); transform: scale(1.4); }
+.section-nav-dot.active {
+  background: var(--g); width: 8px; height: 28px;
+  border-radius: 4px;
+}
+
+/* ── HERO SPOTLIGHT (radial gradient that follows mouse) ─────────── */
+.hero {
+  position: relative;
+  --mx: 50%; --my: 50%;
+}
+.hero::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle 340px at var(--mx) var(--my),
+              rgba(10, 138, 91, 0.10),
+              rgba(41, 84, 232, 0.05) 30%,
+              transparent 70%);
+  pointer-events: none; z-index: 0;
+  opacity: 0; transition: opacity 0.35s;
+}
+.hero.spot-on::after { opacity: 1; }
+.hero-grid { position: relative; z-index: 1; }
+
+/* ── HERO STAGGER REVEAL ─────────────────────────────────────────── */
+.hero-stagger > * {
+  opacity: 0; transform: translateY(10px);
+}
+.hero-stagger.loaded > * {
+  animation: heroIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.hero-stagger.loaded > *:nth-child(1) { animation-delay: 0.10s; }
+.hero-stagger.loaded > *:nth-child(2) { animation-delay: 0.18s; }
+.hero-stagger.loaded > *:nth-child(3) { animation-delay: 0.26s; }
+.hero-stagger.loaded > *:nth-child(4) { animation-delay: 0.34s; }
+.hero-stagger.loaded > *:nth-child(5) { animation-delay: 0.42s; }
+.hero-stagger.loaded > *:nth-child(6) { animation-delay: 0.50s; }
+.avatar-wrap.loaded .hero-avatar { animation: avatarIn 0.85s cubic-bezier(0.2, 0.9, 0.2, 1) both; }
+@keyframes heroIn { to { opacity: 1; transform: none; } }
+@keyframes avatarIn { from { opacity: 0; transform: scale(0.88); } to { opacity: 1; transform: scale(1); } }
+
+/* ── REVEAL ON SCROLL ────────────────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: opacity, transform; }
+.reveal.is-revealed { opacity: 1; transform: none; }
+
+/* ── MAGNETIC BUTTONS ────────────────────────────────────────────── */
+.btn-primary, .nav-cta { will-change: transform; }
+/* Smooth return when not magnetically pulled — handled by JS clearing transform */
+
+/* ── PROJECT 3D TILT ─────────────────────────────────────────────── */
+.project { transform-style: preserve-3d; will-change: transform; }
+.project:hover { transform: none; } /* override the simple hover transform; JS takes over */
+
+/* ── ⌘K COMMAND PALETTE ──────────────────────────────────────────── */
+.cmdk-backdrop {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(11, 18, 32, 0.40);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+.cmdk-backdrop.open { opacity: 1; pointer-events: auto; }
+.cmdk-panel {
+  position: fixed; left: 50%; top: 18%;
+  width: 560px; max-width: calc(100% - 32px);
+  transform: translateX(-50%) scale(0.96) translateY(-8px);
+  background: var(--bg);
+  border: 1px solid var(--b1);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(11, 18, 32, 0.20), 0 4px 18px rgba(11, 18, 32, 0.08);
+  overflow: hidden;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.22s cubic-bezier(0.2, 0.9, 0.2, 1), transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+.cmdk-backdrop.open .cmdk-panel {
+  opacity: 1; transform: translateX(-50%) scale(1) translateY(0); pointer-events: auto;
+}
+.cmdk-input {
+  width: 100%; padding: 16px 18px; border: none; outline: none;
+  background: transparent;
+  font-family: var(--mono); font-size: 14.5px; color: var(--tx);
+  border-bottom: 1px solid var(--b1);
+}
+.cmdk-input::placeholder { color: var(--tx3); }
+.cmdk-list { max-height: 360px; overflow-y: auto; padding: 6px; }
+.cmdk-list::-webkit-scrollbar { width: 6px; }
+.cmdk-list::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 4px; }
+.cmdk-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: 8px;
+  font-size: 13px; color: var(--tx);
+  cursor: pointer; transition: background 0.1s, transform 0.1s;
+}
+.cmdk-item .ico { font-size: 15px; line-height: 1; width: 18px; text-align: center; }
+.cmdk-item .desc { color: var(--tx3); font-size: 10.5px; margin-left: auto; text-transform: uppercase; letter-spacing: 0.6px; }
+.cmdk-item.active, .cmdk-item:hover { background: var(--g-soft); color: var(--g); }
+.cmdk-item.active .desc, .cmdk-item:hover .desc { color: var(--g); }
+.cmdk-empty { padding: 30px; text-align: center; color: var(--tx3); font-size: 12.5px; }
+.cmdk-footer {
+  border-top: 1px solid var(--b1);
+  padding: 9px 14px;
+  display: flex; gap: 14px; align-items: center;
+  font-size: 10.5px; color: var(--tx3);
+}
+.cmdk-kbd {
+  background: var(--s3); border: 1px solid var(--b1); border-radius: 4px;
+  padding: 1px 6px; font-family: var(--mono); font-size: 10px; color: var(--tx2);
+}
+
+/* nav hint pill — discovers ⌘K */
+.kbd-hint {
+  display: none; align-items: center; gap: 6px;
+  margin-right: 10px; padding: 5px 10px;
+  background: var(--s3); border: 1px solid var(--b1); border-radius: 100px;
+  font-family: var(--mono); font-size: 10.5px; color: var(--tx3); font-weight: 500;
+  cursor: pointer; transition: all 0.15s;
+}
+.kbd-hint:hover { border-color: var(--tx2); color: var(--tx2); }
+.kbd-hint .ks { background: var(--bg); border: 1px solid var(--b1); border-radius: 4px; padding: 1px 5px; color: var(--tx2); font-size: 10px; }
+@media (min-width: 760px) { .kbd-hint { display: inline-flex; } }
+
+/* ── TOAST ───────────────────────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 220;
+  background: var(--tx); color: var(--bg);
+  padding: 11px 18px; border-radius: 10px;
+  font-family: var(--mono); font-size: 12.5px; font-weight: 500;
+  box-shadow: 0 12px 32px rgba(11, 18, 32, 0.20), 0 2px 6px rgba(11, 18, 32, 0.08);
+  transform: translateY(24px) scale(0.95); opacity: 0;
+  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s;
+  display: flex; align-items: center; gap: 8px;
+}
+.toast.show { transform: none; opacity: 1; }
+.toast .check { color: var(--g); font-weight: 700; }
+
+/* respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  .hero-stagger > * { opacity: 1; transform: none; }
+  .reveal { opacity: 1; transform: none; }
+}
 </style>
 </head>
 <body>
+
+<!-- scroll progress bar (top of viewport) -->
+<div class="scroll-progress"><div class="bar" id="scroll-bar"></div></div>
+
+<!-- left sticky section nav dots (≥1180px) -->
+<aside class="section-nav" aria-label="Section navigation">
+  <button class="section-nav-dot" data-target="hero"       data-label="home"></button>
+  <button class="section-nav-dot" data-target="about"      data-label="about"></button>
+  <button class="section-nav-dot" data-target="current"    data-label="now"></button>
+  <button class="section-nav-dot" data-target="experience" data-label="experience"></button>
+  <button class="section-nav-dot" data-target="projects"   data-label="projects"></button>
+  <button class="section-nav-dot" data-target="repos"      data-label="repos"></button>
+  <button class="section-nav-dot" data-target="skills"     data-label="skills"></button>
+  <button class="section-nav-dot" data-target="contact"    data-label="contact"></button>
+  <button class="section-nav-dot" data-target="agent"      data-label="agent"></button>
+</aside>
 
 <!-- ── NAV ──────────────────────────────────────────────────────── -->
 <nav>
@@ -677,14 +911,19 @@ footer a { color: var(--tx2); }
     <a class="brand" href="/" style="text-decoration:none">
       <span class="prompt">&gt;</span> vicky_kumar.sh<span class="blink">_</span>
     </a>
-    <a class="nav-cta" href="#agent">⚡ ask the agent ↓</a>
+    <div style="display:flex;align-items:center;gap:2px">
+      <button class="kbd-hint" id="kbd-hint" title="Open command palette">
+        <span>search</span> <span class="ks">⌘K</span>
+      </button>
+      <a class="nav-cta" href="#agent">⚡ ask the agent ↓</a>
+    </div>
   </div>
 </nav>
 
 <main>
 
 <!-- ── HERO ─────────────────────────────────────────────────────── -->
-<section class="hero">
+<section class="hero" id="hero">
   <div class="hero-grid">
     <div class="avatar-wrap">
       <img class="hero-avatar"
@@ -692,7 +931,7 @@ footer a { color: var(--tx2); }
            alt="Vicky Kumar avatar"
            loading="eager">
     </div>
-    <div>
+    <div class="hero-stagger" id="hero-content">
       <div class="hero-status">
         <span class="dot"></span> available for opportunities
       </div>
@@ -947,17 +1186,34 @@ function setHero(p) {
   $('hero-tag').textContent = p.identity.tagline;
 }
 
+function animateCount(el, target, unit = '') {
+  const n = parseInt(target, 10);
+  if (!Number.isFinite(n) || n <= 0) { el.innerHTML = `${target}${unit ? `<span class="unit">${unit}</span>` : ''}`; return; }
+  const dur = Math.min(1400, 600 + n * 0.6); // larger numbers tick a touch longer
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min(1, (now - start) / dur);
+    const eased = 1 - Math.pow(1 - t, 3); // ease-out-cubic
+    const v = Math.round(n * eased);
+    el.innerHTML = `${v}${unit ? `<span class="unit">${unit}</span>` : ''}`;
+    if (t < 1) requestAnimationFrame(step);
+    else el.innerHTML = `${n}${unit ? `<span class="unit">${unit}</span>` : ''}`;
+  }
+  requestAnimationFrame(step);
+}
+
 function setStats(p, gh) {
-  // years since EARLIEST role started
   const earliest = p.experience[p.experience.length - 1];
   const yrs = yearsSince(earliest?.period || '');
-  $('stat-yrs').innerHTML = `${yrs}<span class="unit">+</span>`;
-  $('stat-repos').textContent = gh.profile.public_repos ?? gh.repos.length ?? '—';
-  // Extract leading number from achievement strings like "1850+ rating, 1500+ problems solved"
-  const lc = (p.achievements.leetcode.match(/(\d+)/) || [, '?'])[1];
-  const cc = (p.achievements.codechef.match(/(\d+)-star/) || [, '?'])[1];
-  $('stat-lc').innerHTML = `${lc}<span class="unit">+</span>`;
-  $('stat-cc').innerHTML = `${cc}<span class="unit">★</span>`;
+  const repos = gh.profile.public_repos ?? gh.repos.length ?? 0;
+  const lc = parseInt((p.achievements.leetcode.match(/(\d+)/) || [, '0'])[1], 10);
+  const cc = parseInt((p.achievements.codechef.match(/(\d+)-star/) || [, '0'])[1], 10);
+
+  // Set placeholders to 0 then animate up — feels more alive than a static number drop-in.
+  animateCount($('stat-yrs'), yrs, '+');
+  animateCount($('stat-repos'), repos);
+  animateCount($('stat-lc'), lc, '+');
+  animateCount($('stat-cc'), cc, '★');
 }
 
 function setAbout(p) {
@@ -1513,6 +1769,272 @@ document.addEventListener('click', e => {
 document.querySelectorAll('a[href="#agent"]').forEach(a => {
   a.addEventListener('click', () => setTimeout(() => inp.focus(), 400));
 });
+
+// Expose setMode globally so the command palette can drive mode switches
+window.setMode = setMode;
+
+/* ══════════════════════════════════════════════════════════════════
+   PHASE 2.5 — LINEAR-TIER POLISH SCRIPT
+   ══════════════════════════════════════════════════════════════════ */
+
+const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+const isFinePointer = window.matchMedia?.('(hover: hover) and (pointer: fine)').matches;
+
+/* ── HERO STAGGER REVEAL on load ─────────────────────────────────── */
+requestAnimationFrame(() => {
+  document.getElementById('hero-content')?.classList.add('loaded');
+  document.querySelector('.avatar-wrap')?.classList.add('loaded');
+});
+
+/* ── CUSTOM CURSOR (dot + ring) ──────────────────────────────────── */
+let cursorDot = null, cursorRing = null;
+if (isFinePointer && !reduceMotion) {
+  cursorDot = document.createElement('div'); cursorDot.className = 'cursor-dot';
+  cursorRing = document.createElement('div'); cursorRing.className = 'cursor-ring';
+  document.body.append(cursorDot, cursorRing);
+
+  let mx = -100, my = -100, rx = -100, ry = -100;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursorDot.style.transform = `translate(${mx}px, ${my}px)`;
+  });
+  (function ringLoop() {
+    rx += (mx - rx) * 0.22;
+    ry += (my - ry) * 0.22;
+    cursorRing.style.transform = `translate(${rx}px, ${ry}px)`;
+    requestAnimationFrame(ringLoop);
+  })();
+  document.addEventListener('mouseleave', () => document.body.classList.add('cursor-hidden'));
+  document.addEventListener('mouseenter', () => document.body.classList.remove('cursor-hidden'));
+
+  // Hover state — delegated so dynamic content (repos, projects loaded from API) also triggers
+  const INTERACTIVE = 'a, button, .try-card, .repo, .schip, .wchip, .section-nav-dot, [data-cursor="hover"]';
+  document.addEventListener('mouseover', e => {
+    if (e.target.closest(INTERACTIVE)) cursorRing.classList.add('hover');
+  });
+  document.addEventListener('mouseout', e => {
+    if (e.target.closest(INTERACTIVE)) cursorRing.classList.remove('hover');
+  });
+}
+
+/* ── HERO SPOTLIGHT ──────────────────────────────────────────────── */
+const heroEl = document.getElementById('hero');
+if (heroEl && isFinePointer && !reduceMotion) {
+  heroEl.addEventListener('mouseenter', () => heroEl.classList.add('spot-on'));
+  heroEl.addEventListener('mouseleave', () => heroEl.classList.remove('spot-on'));
+  heroEl.addEventListener('mousemove', e => {
+    const r = heroEl.getBoundingClientRect();
+    heroEl.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    heroEl.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  });
+}
+
+/* ── SCROLL PROGRESS BAR + SECTION NAV ───────────────────────────── */
+const scrollBar = document.getElementById('scroll-bar');
+const navDots = Array.from(document.querySelectorAll('.section-nav-dot'));
+const navTargets = navDots.map(d => document.getElementById(d.dataset.target));
+
+navDots.forEach((d, i) => {
+  d.addEventListener('click', () => {
+    const t = navTargets[i];
+    if (!t) return;
+    t.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  });
+});
+
+let lastActiveDot = -1;
+function onScrollPolish() {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight)) * 100;
+  if (scrollBar) scrollBar.style.width = pct.toFixed(2) + '%';
+
+  // active section dot
+  let active = 0;
+  for (let i = 0; i < navTargets.length; i++) {
+    const t = navTargets[i]; if (!t) continue;
+    const top = t.getBoundingClientRect().top;
+    if (top < window.innerHeight * 0.35) active = i;
+  }
+  if (active !== lastActiveDot) {
+    navDots.forEach((d, i) => d.classList.toggle('active', i === active));
+    lastActiveDot = active;
+  }
+}
+window.addEventListener('scroll', onScrollPolish, { passive: true });
+window.addEventListener('resize', onScrollPolish);
+onScrollPolish();
+
+/* ── REVEAL-ON-SCROLL ────────────────────────────────────────────── */
+const revealSelectors = 'section > .section-head, .stats, .project, .repo, .skill-cat, .cp-card, .edu, .contact-card, .exp, .current-role-card, .try-card, .about-text';
+function bindReveal() {
+  document.querySelectorAll(revealSelectors).forEach(el => {
+    if (el.dataset.reveal === 'bound') return;
+    el.dataset.reveal = 'bound';
+    el.classList.add('reveal');
+    revealIO.observe(el);
+  });
+}
+const revealIO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('is-revealed'); revealIO.unobserve(e.target); }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+bindReveal();
+// Rebind after profile data fills the DOM
+const _origLoadProfile = loadProfile;
+window.loadProfile = async function() {
+  await _origLoadProfile();
+  bindReveal();
+  bindTilt();
+};
+
+/* ── MAGNETIC PRIMARY CTAs ───────────────────────────────────────── */
+if (isFinePointer && !reduceMotion) {
+  document.querySelectorAll('.btn-primary, .nav-cta').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width / 2) * 0.18;
+      const y = (e.clientY - r.top - r.height / 2) * 0.18;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
+}
+
+/* ── 3D TILT PROJECT CARDS ───────────────────────────────────────── */
+function bindTilt() {
+  if (!isFinePointer || reduceMotion) return;
+  document.querySelectorAll('.project').forEach(card => {
+    if (card.dataset.tiltBound) return;
+    card.dataset.tiltBound = '1';
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = `perspective(900px) rotateY(${x * 7}deg) rotateX(${-y * 7}deg) translateY(-3px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+}
+
+/* ── TOAST ───────────────────────────────────────────────────────── */
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<span class="check">✓</span> ${msg}`;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 280);
+  }, 1900);
+}
+
+/* ── ⌘K COMMAND PALETTE ──────────────────────────────────────────── */
+const PROFILE_EMAIL = 'vickykr26941@gmail.com';
+const COMMANDS = [
+  { id: 'top',         ico: '🏠', label: 'Go to top',                desc: 'jump', fn: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+  { id: 'about',       ico: '👤', label: 'About — who is Vicky?',    desc: 'jump', fn: () => goto('about') },
+  { id: 'current',     ico: '⚡', label: 'Currently building',       desc: 'jump', fn: () => goto('current') },
+  { id: 'experience',  ico: '📋', label: 'Work history',             desc: 'jump', fn: () => goto('experience') },
+  { id: 'projects',    ico: '🚀', label: 'Featured projects',        desc: 'jump', fn: () => goto('projects') },
+  { id: 'repos',       ico: '📦', label: 'All GitHub repos',         desc: 'jump', fn: () => goto('repos') },
+  { id: 'skills',      ico: '🛠', label: 'Tech stack',               desc: 'jump', fn: () => goto('skills') },
+  { id: 'cp',          ico: '🏆', label: 'Competitive programming',  desc: 'jump', fn: () => goto('cp') },
+  { id: 'contact',     ico: '📬', label: 'Contact',                  desc: 'jump', fn: () => goto('contact') },
+  { id: 'agent',       ico: '🤖', label: 'AI agent (chat)',          desc: 'jump', fn: () => { goto('agent'); setTimeout(() => inp?.focus(), 500); } },
+  { id: 'mode-chat',   ico: '💬', label: 'Switch to Chat mode',      desc: 'mode', fn: () => { window.setMode?.('chat');         goto('agent'); } },
+  { id: 'mode-voice',  ico: '🎙️', label: 'Switch to Voice mode',     desc: 'mode', fn: () => { window.setMode?.('voice');        goto('agent'); } },
+  { id: 'mode-resume', ico: '📄', label: 'Switch to Resume match',   desc: 'mode', fn: () => { window.setMode?.('resume-match'); goto('agent'); } },
+  { id: 'copy-email',  ico: '✉️', label: 'Copy email',               desc: 'copy', fn: () => { copyText(PROFILE_EMAIL, 'Email copied'); } },
+  { id: 'github',      ico: '🐙', label: 'Open GitHub',              desc: 'open', fn: () => window.open('https://github.com/vickykr26941', '_blank') },
+  { id: 'linkedin',    ico: '🔗', label: 'Open LinkedIn',            desc: 'open', fn: () => window.open('https://www.linkedin.com/in/vicky-kumar-a948431a9/', '_blank') },
+  { id: 'source',      ico: '📂', label: 'View this site\'s source', desc: 'open', fn: () => window.open('https://github.com/vickykr26941/portfolio-agent', '_blank') },
+];
+function goto(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+}
+function copyText(text, msg) {
+  try {
+    navigator.clipboard.writeText(text);
+    toast(msg);
+  } catch { toast('Copy failed'); }
+}
+
+const cmdkBackdrop = document.createElement('div');
+cmdkBackdrop.className = 'cmdk-backdrop';
+cmdkBackdrop.innerHTML = `
+  <div class="cmdk-panel" role="dialog" aria-modal="true" aria-label="Command palette">
+    <input class="cmdk-input" placeholder="search anything — sections, modes, contact…" autocomplete="off" spellcheck="false" />
+    <div class="cmdk-list" role="listbox"></div>
+    <div class="cmdk-footer">
+      <span><span class="cmdk-kbd">↑↓</span> navigate</span>
+      <span><span class="cmdk-kbd">↵</span> select</span>
+      <span><span class="cmdk-kbd">esc</span> close</span>
+      <span style="margin-left:auto"><span class="cmdk-kbd">⌘K</span> toggle</span>
+    </div>
+  </div>`;
+document.body.appendChild(cmdkBackdrop);
+const cmdkInput = cmdkBackdrop.querySelector('.cmdk-input');
+const cmdkList = cmdkBackdrop.querySelector('.cmdk-list');
+let cmdkActive = 0, cmdkFiltered = COMMANDS;
+
+function renderCmdk() {
+  if (!cmdkFiltered.length) { cmdkList.innerHTML = '<div class="cmdk-empty">no results — try "voice" or "email"</div>'; return; }
+  cmdkList.innerHTML = cmdkFiltered.map((c, i) => `
+    <div class="cmdk-item ${i === cmdkActive ? 'active' : ''}" data-i="${i}" role="option">
+      <span class="ico">${c.ico}</span>
+      <span>${c.label}</span>
+      <span class="desc">${c.desc}</span>
+    </div>`).join('');
+  cmdkList.querySelectorAll('.cmdk-item').forEach(el => {
+    el.addEventListener('click', () => runCmd(cmdkFiltered[+el.dataset.i]));
+    el.addEventListener('mouseenter', () => {
+      cmdkActive = +el.dataset.i;
+      cmdkList.querySelectorAll('.cmdk-item').forEach(x => x.classList.toggle('active', +x.dataset.i === cmdkActive));
+    });
+  });
+  // Scroll active into view
+  const act = cmdkList.querySelector('.cmdk-item.active');
+  if (act) act.scrollIntoView({ block: 'nearest' });
+}
+function openCmdk() {
+  cmdkBackdrop.classList.add('open');
+  cmdkInput.value = '';
+  cmdkFiltered = COMMANDS; cmdkActive = 0;
+  renderCmdk();
+  setTimeout(() => cmdkInput.focus(), 80);
+}
+function closeCmdk() { cmdkBackdrop.classList.remove('open'); }
+function runCmd(c) { closeCmdk(); if (c?.fn) c.fn(); }
+
+cmdkInput.addEventListener('input', () => {
+  const q = cmdkInput.value.toLowerCase().trim();
+  cmdkFiltered = q
+    ? COMMANDS.filter(c => c.label.toLowerCase().includes(q) || c.desc.toLowerCase().includes(q) || c.id.toLowerCase().includes(q))
+    : COMMANDS;
+  cmdkActive = 0;
+  renderCmdk();
+});
+cmdkInput.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown') { e.preventDefault(); cmdkActive = Math.min(cmdkFiltered.length - 1, cmdkActive + 1); renderCmdk(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); cmdkActive = Math.max(0, cmdkActive - 1); renderCmdk(); }
+  else if (e.key === 'Enter') { e.preventDefault(); runCmd(cmdkFiltered[cmdkActive]); }
+  else if (e.key === 'Escape') closeCmdk();
+});
+cmdkBackdrop.addEventListener('click', e => { if (e.target === cmdkBackdrop) closeCmdk(); });
+document.addEventListener('keydown', e => {
+  // ⌘K / Ctrl+K toggles
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    cmdkBackdrop.classList.contains('open') ? closeCmdk() : openCmdk();
+  }
+});
+document.getElementById('kbd-hint')?.addEventListener('click', openCmdk);
 </script>
 </body>
 </html>
