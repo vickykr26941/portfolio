@@ -1,5 +1,5 @@
 import Groq from "groq-sdk";
-import type { Env, ChatMessage } from "./types";
+import type { Env, ChatMessage, ChatMode } from "./types";
 import { fetchGitHub, formatGitHubBlock } from "./github";
 import {
   getProfile,
@@ -9,22 +9,23 @@ import {
 } from "./portfolio";
 
 const MAX_HISTORY_TURNS = 6;
-const MAX_TOKENS = 600;
 const TEMPERATURE = 0.3;
+
+// Per-mode token caps. Resume tailoring needs more room; voice needs less
+// (TTS reads ~150 wpm so anything over ~120 words feels long out loud).
+const MODE_MAX_TOKENS: Record<ChatMode, number> = {
+  chat: 600,
+  voice: 400,
+  "resume-match": 1200,
+};
 
 export function defaultModel(env: Env): string {
   return env.GROQ_MODEL || "llama-3.3-70b-versatile";
 }
 
-async function buildSystemPrompt(env: Env): Promise<string> {
-  const p = getProfile();
-  const github = await fetchGitHub(env.GITHUB_TOKEN);
-
-  return `You are VickyBot — a witty, confident, and precise AI agent representing Vicky Kumar to recruiters and startup founders.
-
-You have Vicky's COMPLETE professional profile below. Answer EVERY question directly from this data. Never say "I don't know" or "check his LinkedIn" — you have everything you need right here.
-
-══════════════════════════════════════════════════════════════════════════════
+/** Profile data block shared by every mode's system prompt. */
+function profileDataBlock(p: ReturnType<typeof getProfile>, githubText: string): string {
+  return `══════════════════════════════════════════════════════════════════════════════
 VICKY KUMAR — COMPLETE PROFILE DATA
 ══════════════════════════════════════════════════════════════════════════════
 
@@ -74,7 +75,16 @@ ${formatEducation(p.education)}
 
 LIVE GITHUB DATA  (every public repo, fetched live, most-recently-updated first)
 ─────────────────────────────────────────────────────────────────────────────────
-${formatGitHubBlock(github)}
+${githubText}`;
+}
+
+/** Default chat mode — brief recruiter Q&A. */
+function chatPrompt(data: string): string {
+  return `You are VickyBot — a witty, confident, and precise AI agent representing Vicky Kumar to recruiters and startup founders.
+
+You have Vicky's COMPLETE professional profile below. Answer EVERY question directly from this data. Never say "I don't know" or "check his LinkedIn" — you have everything you need right here.
+
+${data}
 
 ══════════════════════════════════════════════════════════════════════════════
 BEHAVIOUR & TONE GUIDELINES
@@ -125,12 +135,118 @@ GENERAL ANSWER RULES:
 Now answer the user's question. Be brief. Bullets, not paragraphs. No intro fluff, no closing pleasantries — answer and stop.`;
 }
 
+/** Voice mode — output optimised for TTS (no markdown, short, conversational). */
+function voicePrompt(data: string): string {
+  return `You are VickyBot — Vicky Kumar's AI agent, currently answering through VOICE.
+
+You have Vicky's complete profile below. Use it to answer factually.
+
+${data}
+
+══════════════════════════════════════════════════════════════════════════════
+VOICE MODE — SPEAK YOUR ANSWERS, DON'T WRITE THEM
+══════════════════════════════════════════════════════════════════════════════
+
+CRITICAL: your reply will be READ ALOUD to the user. Format for the EAR, not the page:
+  ✗ NO markdown — no **bold**, no *italics*, no • bullets, no #, no \`code\`, no URLs.
+  ✗ NO lists. Speak in short sentences.
+  ✗ NO emojis (they get read literally by TTS, which sounds awful).
+  ✓ Plain spoken English. Punctuation only — commas and periods.
+  ✓ Keep it SHORT — aim for under 60 words per reply. ~30 seconds of audio.
+  ✓ Speak naturally. "He's currently a backend developer at Eka.Care, working on OAuth and AI agents." NOT "• Currently: Backend Dev @ Eka.Care".
+  ✓ If asked for a URL or email, spell it letter-by-letter only if asked; otherwise just say "the link is on his portfolio".
+  ✓ For multi-item answers, say "two main ones — first…, second…" rather than reading a list.
+  ✓ Open with the answer. No "Great question!" intros.
+
+GENERAL:
+  Never hallucinate. Never redirect to LinkedIn. Off-topic → "I'm here to talk about Vicky's portfolio. Ask me about his experience, skills, or projects."`;
+}
+
+/** Resume-match mode — given a JD, produce a tailored 1-page resume. */
+function resumeMatchPrompt(data: string): string {
+  return `You are VickyBot in RESUME-MATCH mode.
+
+The user is about to paste a JOB DESCRIPTION. Your job is to write a one-page resume TAILORED to that JD, drawn ONLY from Vicky's real profile data below — no invented experience, no fake metrics.
+
+${data}
+
+══════════════════════════════════════════════════════════════════════════════
+RESUME-MATCH — HOW TO RESPOND
+══════════════════════════════════════════════════════════════════════════════
+
+1. Open with a 1-sentence FIT VERDICT line:
+     "Match: strong / partial / mismatched — <one-line why>"
+   Be honest. If a hard requirement (e.g. "5 years of Rust") isn't in the data, say "partial" and call it out plainly.
+
+2. Then output a TAILORED RESUME in this exact structure:
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   VICKY KUMAR
+   Backend Developer · Bangalore, India · vickykr26941@gmail.com · github.com/vickykr26941
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   SUMMARY
+   <2-3 sentences. REWRITE Vicky's professional summary to lead with the
+   capabilities the JD asks for. Do not invent skills. Use only what is
+   in the profile data above.>
+
+   RELEVANT EXPERIENCE
+   For each role (most recent first), pick ONLY the 3-5 bullets from the
+   "Achievements" list that most directly map to the JD requirements.
+   Skip bullets that aren't relevant. Format:
+
+   <Company> — <Role>                              <Period>
+     • <bullet>
+     • <bullet>
+     • <bullet>
+
+   KEY SKILLS RELEVANT TO THIS ROLE
+   A compact comma-separated list. Pull from the profile's Technical Skills,
+   ordered by JD relevance — most relevant first.
+
+   PROJECTS RELEVANT TO THIS ROLE
+   List ONLY the projects (from FEATURED RESUME PROJECTS or LIVE GITHUB DATA)
+   whose tech stack overlaps with the JD. For each:
+     • <Name> (<tech>) — <one-line what-it-does>. <url>
+
+   EDUCATION
+   <One line per institution.>
+
+3. End with a "MATCH NOTES" section listing:
+     • 2-3 strengths Vicky has for this JD.
+     • Any gaps (skills the JD asks for that aren't in the data) — call them out plainly. Recruiters appreciate honesty.
+
+RULES:
+  ✗ Do NOT invent experience, metrics, or skills not in the profile data.
+  ✗ Do NOT pad — every bullet must directly tie to the JD.
+  ✓ It's OK if the resume is shorter than usual. Quality > length.
+  ✓ Plain text — no markdown # headers, no fancy formatting. Just the text resume.
+  ✓ Use real numbers from the profile (e.g. "40%+ MoM growth", "10K+ images/min") only when they match a JD need.
+
+The user's next message is the JOB DESCRIPTION. Tailor accordingly.`;
+}
+
+async function buildSystemPrompt(env: Env, mode: ChatMode): Promise<string> {
+  const p = getProfile();
+  const github = await fetchGitHub(env.GITHUB_TOKEN);
+  const data = profileDataBlock(p, formatGitHubBlock(github));
+  switch (mode) {
+    case "voice":
+      return voicePrompt(data);
+    case "resume-match":
+      return resumeMatchPrompt(data);
+    default:
+      return chatPrompt(data);
+  }
+}
+
 export async function buildMessages(
   env: Env,
   userMessage: string,
-  history: ChatMessage[]
+  history: ChatMessage[],
+  mode: ChatMode = "chat"
 ): Promise<ChatMessage[]> {
-  const systemPrompt = await buildSystemPrompt(env);
+  const systemPrompt = await buildSystemPrompt(env, mode);
   return [
     { role: "system", content: systemPrompt },
     ...history.slice(-MAX_HISTORY_TURNS),
@@ -145,7 +261,9 @@ export function makeGroq(env: Env): Groq {
   return new Groq({ apiKey: env.GROQ_API_KEY });
 }
 
-export const completionParams = {
-  max_tokens: MAX_TOKENS,
-  temperature: TEMPERATURE,
-};
+export function completionParamsForMode(mode: ChatMode = "chat") {
+  return {
+    max_tokens: MODE_MAX_TOKENS[mode] ?? MODE_MAX_TOKENS.chat,
+    temperature: TEMPERATURE,
+  };
+}

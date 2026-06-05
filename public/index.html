@@ -426,6 +426,116 @@ section { max-width: 1100px; margin: 0 auto; padding: 64px 24px; }
 }
 .agent-cta p strong { color: var(--tx); font-weight: 600; }
 
+/* ── FEATURE CARDS (above chat) ──────────────────────────────────── */
+.try-grid {
+  display: grid; gap: 10px;
+  grid-template-columns: 1fr;
+  margin-bottom: 18px;
+}
+@media (min-width: 700px) { .try-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 540px) and (max-width: 699px) { .try-grid { grid-template-columns: repeat(2, 1fr); } }
+.try-card {
+  background: var(--s2); border: 1px solid var(--b1); border-radius: var(--r);
+  padding: 14px 14px 12px; cursor: pointer; transition: all 0.18s;
+  display: flex; flex-direction: column; gap: 6px;
+  position: relative; box-shadow: var(--shadow);
+  text-align: left;
+}
+.try-card:hover { border-color: var(--g); transform: translateY(-2px); box-shadow: var(--shadow-h); }
+.try-card[data-active="true"] {
+  border-color: var(--g); background: var(--g-soft);
+  box-shadow: 0 0 0 3px rgba(10,138,91,0.10);
+}
+.try-card[data-soon="true"] { cursor: not-allowed; opacity: 0.55; }
+.try-card[data-soon="true"]:hover { transform: none; border-color: var(--b1); box-shadow: var(--shadow); }
+.try-card .icn { font-size: 22px; line-height: 1; }
+.try-card .ttl {
+  font-family: var(--sans); font-weight: 800; font-size: 13.5px; color: var(--tx);
+  display: flex; align-items: center; gap: 6px;
+}
+.try-card .blurb { font-size: 11.5px; color: var(--tx2); line-height: 1.5; }
+.try-card .pill {
+  display: inline-block; margin-left: auto;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 100px;
+  background: var(--y); background: rgba(192,132,0,0.12); color: var(--y);
+  border: 1px solid rgba(192,132,0,0.30);
+}
+.try-card .pill.live { background: var(--g-soft); color: var(--g); border-color: rgba(10,138,91,0.30); }
+
+/* ── MODE BANNER (top of chat shell) ─────────────────────────────── */
+.mode-banner {
+  display: none;
+  align-items: center; justify-content: space-between; gap: 10px;
+  padding: 10px 16px; background: var(--g-soft); color: var(--g);
+  border-bottom: 1px solid rgba(10,138,91,0.25);
+  font-size: 12px; font-weight: 600;
+}
+.mode-banner[data-active="true"] { display: flex; }
+.mode-banner .label { display: inline-flex; align-items: center; gap: 7px; }
+.mode-banner button {
+  background: transparent; border: 1px solid rgba(10,138,91,0.30);
+  color: var(--g); cursor: pointer; padding: 3px 10px;
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  border-radius: 100px; transition: all 0.15s;
+}
+.mode-banner button:hover { background: var(--g); color: white; }
+
+/* ── MIC BUTTON ──────────────────────────────────────────────────── */
+.mic-btn {
+  width: 34px; height: 34px; flex-shrink: 0; border-radius: var(--r-sm);
+  background: var(--s2); border: 1px solid var(--b2); color: var(--tx2);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.mic-btn:hover { border-color: var(--g); color: var(--g); }
+.mic-btn.listening {
+  background: var(--g); color: white; border-color: var(--g);
+  box-shadow: 0 0 0 4px rgba(10,138,91,0.20);
+  animation: micPulse 1.2s ease-in-out infinite;
+}
+@keyframes micPulse {
+  50% { box-shadow: 0 0 0 9px rgba(10,138,91,0); }
+}
+.mic-btn svg { width: 15px; height: 15px; fill: currentColor; }
+
+/* ── JD INPUT (resume match mode) ────────────────────────────────── */
+.jd-input-wrap { display: none; padding: 14px 16px; background: var(--s2); }
+.jd-input-wrap[data-active="true"] { display: block; }
+.jd-input-wrap label {
+  display: block; font-size: 11px; color: var(--tx2); font-weight: 600;
+  letter-spacing: 0.4px; margin-bottom: 6px;
+}
+#jd {
+  width: 100%; min-height: 90px; max-height: 200px;
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.6; color: var(--tx);
+  background: var(--bg); border: 1px solid var(--b1); border-radius: var(--r-sm);
+  padding: 10px 12px; resize: vertical; outline: none;
+}
+#jd:focus { border-color: var(--g); box-shadow: 0 0 0 3px var(--glow); }
+#jd::placeholder { color: var(--tx3); }
+.jd-actions { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+.jd-actions button {
+  padding: 8px 14px; border-radius: var(--r-sm); font-family: var(--mono);
+  font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.jd-go {
+  background: linear-gradient(135deg, var(--g), #13a26c); color: white;
+  border: 1px solid rgba(10,138,91,0.30);
+}
+.jd-go:hover { background: linear-gradient(135deg, #0c9d68, #16b478); }
+.jd-go:disabled { opacity: 0.5; cursor: not-allowed; }
+.jd-cancel {
+  background: var(--bg); color: var(--tx2); border: 1px solid var(--b2);
+}
+.jd-cancel:hover { border-color: var(--tx2); }
+
+/* When in JD mode, hide the regular chat input row + sugg bar */
+.chat-shell[data-mode="resume-match"] .sugg-bar { display: none; }
+.chat-shell[data-mode="resume-match"] .input-wrap { display: none; }
+.chat-shell[data-mode="resume-match"] .jd-input-wrap { display: block; }
+
 .chat-shell {
   background: var(--s2); border: 1px solid var(--b1); border-radius: var(--r);
   box-shadow: var(--shadow-h);
@@ -739,7 +849,35 @@ footer a { color: var(--tx2); }
       <p>Don't want to scroll? Skip the reading and just <strong>ask anything about Vicky's work, projects, experience, or stack</strong>. The agent has the full profile + live GitHub data. Real-time streaming, no canned answers.</p>
     </div>
 
-    <div class="chat-shell">
+    <!-- Feature card grid — modes recruiters can switch into with one click -->
+    <div class="try-grid" id="try-grid">
+      <button class="try-card" data-mode="chat" data-active="true">
+        <span class="icn">💬</span>
+        <span class="ttl">Ask anything <span class="pill live">live</span></span>
+        <span class="blurb">Free-form Q&amp;A. Streaming replies grounded in real profile + GitHub data.</span>
+      </button>
+      <button class="try-card" data-mode="voice">
+        <span class="icn">🎙️</span>
+        <span class="ttl">Voice mode <span class="pill live">live</span></span>
+        <span class="blurb">Speak your question. Bot replies out loud. Browser-native, no setup.</span>
+      </button>
+      <button class="try-card" data-mode="resume-match">
+        <span class="icn">📄</span>
+        <span class="ttl">Resume match <span class="pill live">live</span></span>
+        <span class="blurb">Paste a JD. Get a one-page tailored resume + honest fit verdict.</span>
+      </button>
+      <button class="try-card" data-soon="true" title="Coming next — RAG over Vicky's GitHub code">
+        <span class="icn">🔍</span>
+        <span class="ttl">Code search <span class="pill">soon</span></span>
+        <span class="blurb">RAG over Vicky's repos. Ask for code examples, get cited file paths.</span>
+      </button>
+    </div>
+
+    <div class="chat-shell" id="chat-shell" data-mode="chat">
+      <div class="mode-banner" id="mode-banner">
+        <span class="label" id="mode-label"></span>
+        <button id="mode-exit">exit mode</button>
+      </div>
       <div id="messages"></div>
       <div class="sugg-bar" id="sugg">
         <span class="schip" data-q="Tell me about your current role at Eka.Care">💼 eka.care role</span>
@@ -752,9 +890,24 @@ footer a { color: var(--tx2); }
       <div class="input-wrap">
         <div class="input-row">
           <textarea id="inp" rows="1" placeholder="ask anything about vicky…" maxlength="600"></textarea>
+          <button id="mic" class="mic-btn" title="Speak (voice mode)">
+            <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.92V22h2v-4.08A7 7 0 0019 11h-2z"/></svg>
+          </button>
           <button id="send" title="Send">
             <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
           </button>
+        </div>
+      </div>
+      <!-- Resume-match mode: replaces input with a JD textarea -->
+      <div class="jd-input-wrap" id="jd-wrap">
+        <label for="jd">paste the job description below ↓</label>
+        <textarea id="jd" placeholder="e.g.&#10;&#10;Senior Backend Engineer @ Acme&#10;5+ yrs Go, distributed systems, AWS&#10;Auth/OIDC experience required..."></textarea>
+        <div class="jd-actions">
+          <button class="jd-go" id="jd-go">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17L4 12l1.41-1.41L9 14.17l9.59-9.59L20 6l-11 11z"/></svg>
+            tailor my resume
+          </button>
+          <button class="jd-cancel" id="jd-cancel">cancel</button>
         </div>
       </div>
     </div>
@@ -1111,12 +1264,61 @@ function addError(msg) {
   msgEl.appendChild(w); scrollBot();
 }
 
-async function sendMsg() {
-  const text = inp.value.trim();
-  if (!text || loading) return;
-  loading = true; sndBtn.disabled = true;
-  inp.value = ''; inp.style.height = 'auto';
-  addUser(text); chatHistory.push({ role: 'user', content: text });
+/* ──────────────────────────────────────────────────────────────────
+   MODE STATE — chat | voice | resume-match
+   ────────────────────────────────────────────────────────────────── */
+const MODE_META = {
+  'chat':         { label: '💬 chat mode',         placeholder: 'ask anything about vicky…' },
+  'voice':        { label: '🎙️ voice mode — speak or type, replies are spoken', placeholder: 'tap the mic, or type and hit send…' },
+  'resume-match': { label: '📄 resume match mode',  placeholder: '' },
+};
+let currentMode = 'chat';
+const chatShell = $('chat-shell');
+const modeBanner = $('mode-banner');
+const modeLabel = $('mode-label');
+const modeExit = $('mode-exit');
+
+function setMode(mode) {
+  if (!MODE_META[mode]) return;
+  currentMode = mode;
+  chatShell.dataset.mode = mode;
+  // active card
+  document.querySelectorAll('.try-card[data-mode]').forEach(c => {
+    c.dataset.active = String(c.dataset.mode === mode);
+  });
+  // banner — show only when not default
+  const isDefault = mode === 'chat';
+  modeBanner.dataset.active = String(!isDefault);
+  modeLabel.textContent = MODE_META[mode].label;
+  inp.placeholder = MODE_META[mode].placeholder;
+  if (mode === 'voice') {
+    // make the mic visible affordance
+    if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch {} }
+    inp.focus();
+  } else if (mode === 'resume-match') {
+    setTimeout(() => $('jd').focus(), 50);
+  } else {
+    inp.focus();
+  }
+}
+modeExit.addEventListener('click', () => setMode('chat'));
+document.querySelectorAll('.try-card[data-mode]').forEach(card => {
+  card.addEventListener('click', () => {
+    if (card.dataset.soon === 'true') return;
+    setMode(card.dataset.mode);
+    // scroll the chat into view if user clicked from far above
+    chatShell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+});
+
+/* ──────────────────────────────────────────────────────────────────
+   CHAT SEND — mode-aware
+   ────────────────────────────────────────────────────────────────── */
+async function streamReply(userMessage, mode, opts = {}) {
+  const { historyOverride } = opts;
+  addUser(userMessage);
+  const sentHistory = historyOverride ?? chatHistory.slice(-10);
+  chatHistory.push({ role: 'user', content: userMessage });
   showTyping();
 
   let full = '';
@@ -1124,13 +1326,13 @@ async function sendMsg() {
     const res = await fetch('/api/chat-stream', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text, history: chatHistory.slice(-10) }),
+      body: JSON.stringify({ message: userMessage, history: sentHistory, mode }),
     });
     hideTyping();
     if (!res.ok) {
       let d = 'Something went wrong.';
       try { const e = await res.json(); d = e.detail || d; } catch {}
-      addError(d); return;
+      addError(d); return null;
     }
     const w = document.createElement('div'); w.className = 'msg assistant';
     const bub = document.createElement('div'); bub.className = 'bubble';
@@ -1149,11 +1351,26 @@ async function sendMsg() {
     }
     bub.innerHTML = render(full);
     chatHistory.push({ role: 'assistant', content: full });
+    return full;
   } catch {
     hideTyping();
     addError('Network error. Make sure the server is running.');
-  } finally {
-    loading = false; sndBtn.disabled = false; inp.focus();
+    return null;
+  }
+}
+
+async function sendMsg() {
+  const text = inp.value.trim();
+  if (!text || loading) return;
+  loading = true; sndBtn.disabled = true;
+  inp.value = ''; inp.style.height = 'auto';
+
+  const full = await streamReply(text, currentMode);
+  loading = false; sndBtn.disabled = false; inp.focus();
+
+  // Voice mode → speak the assistant's reply
+  if (currentMode === 'voice' && full && window.speechSynthesis) {
+    speakOut(full);
   }
 }
 
@@ -1161,7 +1378,131 @@ sndBtn.addEventListener('click', sendMsg);
 inp.addEventListener('input', () => { inp.style.height = 'auto'; inp.style.height = Math.min(inp.scrollHeight, 108) + 'px'; });
 inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } });
 
-// suggestion chips + welcome chips
+/* ──────────────────────────────────────────────────────────────────
+   VOICE — SpeechRecognition in, SpeechSynthesis out
+   ────────────────────────────────────────────────────────────────── */
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+const micBtn = $('mic');
+let recognition = null;
+let listening = false;
+
+function startListening() {
+  if (!SpeechRec) {
+    addError('Voice input not supported in this browser. Try Chrome or Safari.');
+    return;
+  }
+  if (listening) { recognition?.stop(); return; }
+  recognition = new SpeechRec();
+  recognition.lang = 'en-US';
+  recognition.interimResults = true;
+  recognition.continuous = false;
+  recognition.onstart = () => { listening = true; micBtn.classList.add('listening'); };
+  recognition.onresult = (e) => {
+    const txt = Array.from(e.results).map(r => r[0].transcript).join('').trim();
+    inp.value = txt;
+    inp.dispatchEvent(new Event('input'));
+    if (e.results[e.results.length - 1].isFinal) {
+      stopListening();
+      if (currentMode === 'chat') setMode('voice'); // auto-flip to voice on first dictation
+      sendMsg();
+    }
+  };
+  recognition.onerror = (e) => {
+    console.warn('Speech error', e.error);
+    stopListening();
+  };
+  recognition.onend = () => stopListening();
+  try { recognition.start(); }
+  catch (e) { console.warn(e); stopListening(); }
+}
+function stopListening() {
+  listening = false;
+  micBtn.classList.remove('listening');
+}
+micBtn.addEventListener('click', startListening);
+
+function speakOut(text) {
+  if (!window.speechSynthesis) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 1.05;
+    u.pitch = 1;
+    window.speechSynthesis.speak(u);
+  } catch (e) { console.warn('speak error', e); }
+}
+// Stop speaking when exiting voice mode or refreshing
+modeExit.addEventListener('click', () => { try { window.speechSynthesis?.cancel(); } catch {} });
+window.addEventListener('beforeunload', () => { try { window.speechSynthesis?.cancel(); } catch {} });
+
+/* ──────────────────────────────────────────────────────────────────
+   RESUME MATCH — paste JD, stream tailored resume
+   ────────────────────────────────────────────────────────────────── */
+const jdEl = $('jd');
+const jdGo = $('jd-go');
+const jdCancel = $('jd-cancel');
+
+jdCancel.addEventListener('click', () => setMode('chat'));
+
+jdGo.addEventListener('click', async () => {
+  const jd = jdEl.value.trim();
+  if (!jd || loading) return;
+  if (jd.length < 40) {
+    addError('Paste a real JD (at least a couple of sentences) so the match is meaningful.');
+    return;
+  }
+  loading = true; jdGo.disabled = true; jdCancel.disabled = true;
+  // Don't pile a giant JD into the visible chat — show a compact placeholder instead
+  const preview = jd.length > 220 ? jd.slice(0, 220).replace(/\s+/g, ' ') + '…' : jd;
+  addUser(`📄 Resume-match request:\n\n"${preview}"`);
+  // Send the actual full JD as the user message; the visible bubble already showed the preview
+  chatHistory.length = 0; // resume-match is a fresh conversation
+  showTyping();
+  let full = '';
+  try {
+    const res = await fetch('/api/chat-stream', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: jd, history: [], mode: 'resume-match' }),
+    });
+    hideTyping();
+    if (!res.ok) {
+      let d = 'Something went wrong.';
+      try { const e = await res.json(); d = e.detail || d; } catch {}
+      addError(d);
+    } else {
+      const w = document.createElement('div'); w.className = 'msg assistant';
+      const bub = document.createElement('div'); bub.className = 'bubble';
+      bub.innerHTML = '<span class="cursor"></span>';
+      w.appendChild(mkAv('assistant')); w.appendChild(bub);
+      msgEl.appendChild(w); scrollBot();
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        full += decoder.decode(value, { stream: true });
+        bub.innerHTML = renderStream(full) + '<span class="cursor"></span>';
+        scrollBot();
+      }
+      bub.innerHTML = render(full);
+      chatHistory.push({ role: 'user', content: jd });
+      chatHistory.push({ role: 'assistant', content: full });
+    }
+  } catch {
+    hideTyping();
+    addError('Network error. Make sure the server is running.');
+  } finally {
+    loading = false; jdGo.disabled = false; jdCancel.disabled = false;
+    jdEl.value = '';
+    setMode('chat');
+  }
+});
+
+/* ──────────────────────────────────────────────────────────────────
+   QUICK-START CHIPS
+   ────────────────────────────────────────────────────────────────── */
 function chip(text) { inp.value = text; sendMsg(); inp.focus(); }
 document.querySelectorAll('.schip').forEach(el => el.addEventListener('click', () => chip(el.dataset.q)));
 document.addEventListener('click', e => {
