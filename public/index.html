@@ -4,11 +4,46 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<meta name="description" content="Vicky Kumar — Backend Developer at Eka.Care. Go, Python, AI agents, OAuth2, cloud infrastructure. Ask my AI agent anything.">
+<meta name="description" content="Vicky Kumar — Backend Developer at Eka.Care. Go, Python, AI agents, OAuth2, cloud infrastructure. Chat with my AI agent, try voice mode, or paste a JD for an instant tailored resume.">
 <title>Vicky Kumar — Backend Developer · AI Agent</title>
+<link rel="canonical" href="https://vicky-portfolio-agent.pages.dev/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a8a5b'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='28' font-weight='700' fill='white' text-anchor='middle'%3EVK%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="https://avatars.githubusercontent.com/vickykr26941">
+
+<!-- Open Graph / link sharing -->
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Vicky Kumar — Backend Developer · AI Agent">
+<meta property="og:description" content="Backend Developer at Eka.Care — Go, Python, AI agents, OAuth2, cloud infra. Chat with my AI agent, try voice mode, or paste a JD for an instant tailored resume.">
+<meta property="og:url" content="https://vicky-portfolio-agent.pages.dev/">
+<meta property="og:image" content="https://avatars.githubusercontent.com/vickykr26941">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vicky Kumar — Backend Developer · AI Agent">
+<meta name="twitter:description" content="Chat with my AI portfolio agent — real profile + live GitHub data, voice mode, instant JD-tailored resume.">
+<meta name="twitter:image" content="https://avatars.githubusercontent.com/vickykr26941">
+
+<!-- Structured data for search engines -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Vicky Kumar",
+  "jobTitle": "Backend Developer",
+  "worksFor": { "@type": "Organization", "name": "Eka.Care" },
+  "address": { "@type": "PostalAddress", "addressLocality": "Bangalore", "addressCountry": "IN" },
+  "email": "mailto:vickykr26941@gmail.com",
+  "url": "https://vicky-portfolio-agent.pages.dev/",
+  "image": "https://avatars.githubusercontent.com/vickykr26941",
+  "sameAs": [
+    "https://github.com/vickykr26941",
+    "https://www.linkedin.com/in/vicky-kumar-a948431a9/"
+  ],
+  "knowsAbout": ["Go", "Python", "Java", "Distributed Systems", "OAuth2", "OpenID Connect", "AWS", "AI Agents", "LLM Integration", "MCP"]
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg:       #ffffff;
@@ -885,12 +920,97 @@ footer a { color: var(--tx2); }
   .hero-stagger > * { opacity: 1; transform: none; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   WORLD-CLASS PASS — hybrid typography · a11y · résumé · delights
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── HYBRID TYPE SYSTEM ──────────────────────────────────────────────
+   Mono stays for the terminal identity (nav, section tags, chips,
+   stats, inputs). Long-form prose switches to Inter — the difference
+   between "dev cosplay" and "product-grade readable". */
+:root { --sans-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+.about-text,
+.section-sub,
+.hero p.tag,
+.project-desc,
+.role-bullets li,
+.exp-bullets li,
+.cp-highlights li,
+.edu-deg,
+.try-card .blurb,
+.welcome-card p,
+.agent-cta p,
+.bubble {
+  font-family: var(--sans-ui);
+  letter-spacing: 0.01em;
+}
+.about-text { font-size: 16px; line-height: 1.8; }
+.project-desc { font-size: 13px; }
+.role-bullets li, .exp-bullets li { font-size: 13.5px; }
+.bubble { font-size: 13.5px; }
+.bubble code { font-family: var(--mono); }
+
+/* ── A11Y: skip link + visible focus ─────────────────────────────── */
+.skip-link {
+  position: fixed; top: -48px; left: 16px; z-index: 300;
+  background: var(--tx); color: var(--bg);
+  padding: 10px 16px; border-radius: 8px;
+  font-family: var(--mono); font-size: 12.5px; font-weight: 600;
+  transition: top 0.18s;
+}
+.skip-link:focus { top: 12px; text-decoration: none; outline: none; }
+:focus-visible {
+  outline: 2px solid var(--g);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.cmdk-input:focus-visible, #inp:focus-visible, #jd:focus-visible { outline: none; }
+
+/* ── CONTACT: copy affordance ────────────────────────────────────── */
+.copy-btn {
+  margin-left: auto; flex-shrink: 0;
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--s3); border: 1px solid var(--b1); color: var(--tx3);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.15s;
+}
+.copy-btn:hover { border-color: var(--g); color: var(--g); background: var(--g-soft); }
+.copy-btn svg { width: 13px; height: 13px; fill: currentColor; }
+
+/* ── MOBILE FLOATING "ASK" PILL ──────────────────────────────────── */
+.fab-agent {
+  position: fixed; bottom: 18px; right: 18px; z-index: 90;
+  display: none; align-items: center; gap: 7px;
+  padding: 12px 18px; border: none; border-radius: 100px;
+  background: linear-gradient(135deg, var(--g), #13a26c); color: #fff;
+  font-family: var(--mono); font-size: 13px; font-weight: 600;
+  box-shadow: 0 8px 24px rgba(10,138,91,0.35), 0 2px 6px rgba(11,18,32,0.12);
+  cursor: pointer;
+  transform: translateY(80px); opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s;
+}
+.fab-agent.show { transform: none; opacity: 1; }
+@media (max-width: 759px) { .fab-agent { display: inline-flex; } }
+
+/* ── PRINT: page itself prints clean (resume.html is the real one) ─ */
+@media print {
+  nav, .section-nav, .scroll-progress, .agent-section, footer,
+  .fab-agent, .cursor-dot, .cursor-ring, .blob { display: none !important; }
+  body::before { display: none; }
+  section { padding: 24px 0; }
+}
 </style>
 </head>
 <body>
 
+<a class="skip-link" href="#about">skip to content ↓</a>
+
 <!-- scroll progress bar (top of viewport) -->
 <div class="scroll-progress"><div class="bar" id="scroll-bar"></div></div>
+
+<!-- mobile floating CTA — appears after scrolling past hero -->
+<button class="fab-agent" id="fab-agent" aria-label="Jump to AI agent">⚡ ask the agent</button>
 
 <!-- left sticky section nav dots (≥1180px) -->
 <aside class="section-nav" aria-label="Section navigation">
@@ -948,6 +1068,10 @@ footer a { color: var(--tx2); }
         <a href="#agent" class="btn btn-primary">
           <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.58 2 10c0 2.7 1.7 5.1 4.4 6.5L5 22l5.8-3.2c.4 0 .8.1 1.2.1 5.52 0 10-3.58 10-8s-4.48-9-10-9z"/></svg>
           chat with my AI agent
+        </a>
+        <a href="/resume.html" target="_blank" rel="noopener" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          résumé
         </a>
         <a href="#contact" class="btn btn-secondary">
           <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
@@ -1157,7 +1281,8 @@ footer a { color: var(--tx2); }
   <div class="ftxt">
     built by <strong style="color:var(--tx)">vicky kumar</strong> · powered by
     <span class="accent">groq</span> + <span class="accent">cloudflare pages</span> ·
-    <a href="https://github.com/vickykr26941/portfolio-agent">source</a>
+    <a href="https://github.com/vickykr26941/portfolio-agent">source</a> ·
+    <a href="/resume.html">résumé</a> · <span id="last-updated"></span>
   </div>
 </footer>
 
@@ -1384,28 +1509,64 @@ function setContact(p) {
         <div class="contact-label">${it.label}</div>
         <div class="contact-val">${esc(it.val)}</div>
       </div>
+      ${(it.label === 'email' || it.label === 'phone') ? `
+      <button class="copy-btn" data-copy="${esc(it.val)}" aria-label="Copy ${it.label}" title="Copy ${it.label}">
+        <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+      </button>` : ''}
     </a>`).join('');
+  // copy buttons live inside <a> cards — intercept so the link doesn't fire
+  $('contact-grid').querySelectorAll('.copy-btn').forEach(b => {
+    b.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      copyText(b.dataset.copy, 'Copied to clipboard');
+    });
+  });
+}
+
+function renderProfile(profile, github) {
+  setHero(profile);
+  setStats(profile, github);
+  setAbout(profile);
+  setCurrentRole(profile);
+  setTimeline(profile);
+  setProjects(profile, github);
+  setRepos(github, profile);
+  setSkills(profile);
+  setCP(profile);
+  setEducation(profile);
+  setContact(profile);
+  // footer "last updated" — most recent push across public repos
+  const latest = (github.repos || []).map(r => r.updated).sort().pop();
+  if (latest) {
+    const d = new Date(latest);
+    const el = $('last-updated');
+    if (el) el.textContent = 'last commit ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toLowerCase();
+  }
 }
 
 async function loadProfile() {
+  // Instant paint from sessionStorage, then refresh from network.
+  let paintedFromCache = false;
+  try {
+    const cached = sessionStorage.getItem('profile-v1');
+    if (cached) {
+      const { profile, github } = JSON.parse(cached);
+      renderProfile(profile, github);
+      paintedFromCache = true;
+    }
+  } catch {}
+
   try {
     const res = await fetch('/api/profile');
     if (!res.ok) throw new Error('profile fetch ' + res.status);
-    const { profile, github } = await res.json();
-    setHero(profile);
-    setStats(profile, github);
-    setAbout(profile);
-    setCurrentRole(profile);
-    setTimeline(profile);
-    setProjects(profile, github);
-    setRepos(github, profile);
-    setSkills(profile);
-    setCP(profile);
-    setEducation(profile);
-    setContact(profile);
+    const data = await res.json();
+    renderProfile(data.profile, data.github);
+    try { sessionStorage.setItem('profile-v1', JSON.stringify(data)); } catch {}
   } catch (e) {
     console.error('Failed to load profile:', e);
-    $('about-text').innerHTML = '<span style="color:var(--p)">⚠ Failed to load profile. Try refreshing.</span>';
+    if (!paintedFromCache) {
+      $('about-text').innerHTML = '<span style="color:var(--p)">⚠ Failed to load profile. Try refreshing.</span>';
+    }
   }
 }
 loadProfile();
@@ -1953,6 +2114,7 @@ const COMMANDS = [
   { id: 'github',      ico: '🐙', label: 'Open GitHub',              desc: 'open', fn: () => window.open('https://github.com/vickykr26941', '_blank') },
   { id: 'linkedin',    ico: '🔗', label: 'Open LinkedIn',            desc: 'open', fn: () => window.open('https://www.linkedin.com/in/vicky-kumar-a948431a9/', '_blank') },
   { id: 'source',      ico: '📂', label: 'View this site\'s source', desc: 'open', fn: () => window.open('https://github.com/vickykr26941/portfolio-agent', '_blank') },
+  { id: 'resume',      ico: '📑', label: 'Download résumé (PDF)',    desc: 'open', fn: () => window.open('/resume.html', '_blank') },
 ];
 function goto(id) {
   const el = document.getElementById(id);
@@ -2035,6 +2197,29 @@ document.addEventListener('keydown', e => {
   }
 });
 document.getElementById('kbd-hint')?.addEventListener('click', openCmdk);
+
+/* ── MOBILE FAB — appears after the hero scrolls away ────────────── */
+const fab = document.getElementById('fab-agent');
+if (fab) {
+  fab.addEventListener('click', () => { goto('agent'); setTimeout(() => inp?.focus(), 500); });
+  window.addEventListener('scroll', () => {
+    const past = window.scrollY > 600;
+    const nearAgent = document.getElementById('agent').getBoundingClientRect().top < window.innerHeight;
+    fab.classList.toggle('show', past && !nearAgent);
+  }, { passive: true });
+}
+
+/* ── CONSOLE EASTER EGG — for the devs who look ──────────────────── */
+console.log(
+  '%c⚡ VickyBot %c— hey, you found the console.\n' +
+  '%cThis site is a Cloudflare Pages app: static UI + TypeScript Functions + Groq (Llama 3.3 70B) streaming.\n' +
+  'Source: https://github.com/vickykr26941/portfolio-agent\n' +
+  'API:    GET /api/profile · POST /api/chat-stream {message, mode}\n' +
+  'Psst — try ⌘K.',
+  'color:#0a8a5b;font-weight:bold;font-size:14px',
+  'color:inherit;font-size:14px',
+  'color:#8c95a8;font-size:12px'
+);
 </script>
 </body>
 </html>
