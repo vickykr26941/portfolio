@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Vicky Kumar — Résumé</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a8a5b'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='28' font-weight='700' fill='white' text-anchor='middle'%3EVK%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── ATS-friendly, print-first résumé ─────────────────────────────
+   Single column, semantic HTML, real text everywhere. No tables,
+   no images, no columns that confuse resume parsers. */
+:root {
+  --tx:  #111827;
+  --tx2: #4b5563;
+  --tx3: #9ca3af;
+  --g:   #0a8a5b;
+  --line:#e5e7eb;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--tx); background: #f3f4f6;
+  font-size: 13px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.page {
+  max-width: 800px; margin: 28px auto; padding: 48px 56px;
+  background: white; border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
+}
+.toolbar {
+  max-width: 800px; margin: 16px auto 0; padding: 0 4px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.toolbar a, .toolbar button {
+  font-family: inherit; font-size: 13px; font-weight: 500;
+  color: var(--tx2); text-decoration: none;
+  background: white; border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 14px; cursor: pointer; transition: all 0.15s;
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.toolbar a:hover, .toolbar button:hover { border-color: var(--g); color: var(--g); }
+.toolbar .print-btn { background: var(--g); border-color: var(--g); color: white; font-weight: 600; }
+.toolbar .print-btn:hover { background: #07734d; color: white; }
+
+header.r-head { margin-bottom: 18px; }
+h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+.r-title { font-size: 14px; color: var(--g); font-weight: 600; margin-top: 2px; }
+.r-contact { margin-top: 8px; font-size: 12px; color: var(--tx2); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.r-contact a { color: var(--tx2); text-decoration: none; }
+.r-contact a:hover { color: var(--g); }
+
+h2 {
+  font-size: 12px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase;
+  color: var(--g); border-bottom: 1px solid var(--line);
+  padding-bottom: 5px; margin: 22px 0 10px;
+}
+.summary { color: var(--tx2); }
+
+.job { margin-bottom: 14px; }
+.job-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 2px 12px; }
+.job-co { font-weight: 700; font-size: 14px; }
+.job-role { color: var(--tx2); font-size: 12.5px; }
+.job-period { color: var(--tx3); font-size: 12px; white-space: nowrap; }
+.job-tech { font-size: 11.5px; color: var(--tx3); margin: 1px 0 5px; }
+ul { padding-left: 18px; }
+li { margin-bottom: 3px; color: var(--tx2); }
+li::marker { color: var(--g); }
+
+.proj { margin-bottom: 10px; }
+.proj-name { font-weight: 600; font-size: 13px; }
+.proj-name a { color: var(--g); text-decoration: none; font-weight: 500; font-size: 12px; }
+.proj-desc { color: var(--tx2); font-size: 12.5px; }
+
+.skill-row { margin-bottom: 4px; }
+.skill-row b { font-weight: 600; }
+.skill-row span { color: var(--tx2); }
+
+.edu-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2px 12px; margin-bottom: 6px; }
+.edu-school { font-weight: 600; }
+.edu-deg { color: var(--tx2); font-size: 12.5px; }
+.edu-meta { color: var(--tx3); font-size: 12px; }
+
+.loading { text-align: center; padding: 80px 0; color: var(--tx3); }
+
+@media print {
+  body { background: white; font-size: 11.5px; }
+  .page { margin: 0; padding: 0; max-width: none; box-shadow: none; border-radius: 0; }
+  .toolbar { display: none; }
+  h2 { margin: 14px 0 7px; }
+  .job { page-break-inside: avoid; }
+  a { color: inherit; }
+}
+@page { margin: 14mm 16mm; }
+@media (max-width: 640px) { .page { padding: 28px 22px; margin: 12px; } }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <a href="/">← back to portfolio</a>
+  <button class="print-btn" onclick="window.print()">⬇ save as PDF</button>
+</div>
+
+<main class="page" id="page">
+  <div class="loading">loading résumé…</div>
+</main>
+
+<script>
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function render({ profile: p }) {
+  const c = p.contact;
+  const jobs = p.experience.map(j => `
+    <div class="job">
+      <div class="job-head">
+        <span><span class="job-co">${esc(j.company)}</span> — <span class="job-role">${esc(j.role)}, ${esc(j.location)}</span></span>
+        <span class="job-period">${esc(j.period)}</span>
+      </div>
+      <div class="job-tech">${j.tech.map(esc).join(' · ')}</div>
+      <ul>${j.highlights.map(h => `<li>${esc(h)}</li>`).join('')}</ul>
+    </div>`).join('');
+
+  const projects = p.projects.map(pr => `
+    <div class="proj">
+      <div class="proj-name">${esc(pr.name)} <span style="color:var(--tx3);font-weight:400">(${esc(pr.year)} · ${pr.tech.map(esc).join(', ')})</span>
+        ${pr.github?.trim() ? ` — <a href="${esc(pr.github)}">${esc(pr.github.replace('https://',''))}</a>` : ''}
+      </div>
+      <div class="proj-desc">${esc(pr.description)}</div>
+    </div>`).join('');
+
+  const skills = [
+    ['Languages', p.skills.languages],
+    ['Frameworks', p.skills.frameworks],
+    ['Databases', p.skills.databases],
+    ['Cloud & DevOps', p.skills.cloud_devops],
+    ['Tools', p.skills.tools],
+    ['Core', p.skills.core],
+  ].map(([k, v]) => `<div class="skill-row"><b>${k}:</b> <span>${v.map(esc).join(', ')}</span></div>`).join('');
+
+  const edu = p.education.map(e => `
+    <div class="edu-row">
+      <span><span class="edu-school">${esc(e.institution)}</span> — <span class="edu-deg">${esc(e.degree)}</span></span>
+      <span class="edu-meta">${esc(e.period)}${e.gpa ? ' · GPA ' + esc(e.gpa) : ''}${e.percentage ? ' · ' + esc(e.percentage) : ''}</span>
+    </div>`).join('');
+
+  const a = p.achievements;
+
+  document.getElementById('page').innerHTML = `
+    <header class="r-head">
+      <h1>${esc(p.identity.name)}</h1>
+      <div class="r-title">${esc(p.identity.title)}</div>
+      <div class="r-contact">
+        <span>${esc(p.identity.location)}</span>
+        <a href="mailto:${esc(c.email)}">${esc(c.email)}</a>
+        <span>${esc(c.phone)}</span>
+        <a href="${esc(c.github)}">${esc(c.github.replace('https://',''))}</a>
+        <a href="${esc(c.linkedin)}">linkedin</a>
+      </div>
+    </header>
+
+    <h2>Summary</h2>
+    <p class="summary">${esc(p.identity.summary)}</p>
+
+    <h2>Experience</h2>
+    ${jobs}
+
+    <h2>Projects</h2>
+    ${projects}
+
+    <h2>Skills</h2>
+    ${skills}
+
+    <h2>Achievements</h2>
+    <ul>
+      <li>LeetCode: ${esc(a.leetcode)} · CodeChef: ${esc(a.codechef)} · HackerRank: ${esc(a.hackerrank)}</li>
+      ${a.highlights.map(h => `<li>${esc(h)}</li>`).join('')}
+    </ul>
+
+    <h2>Education</h2>
+    ${edu}
+  `;
+  document.title = `${p.identity.name} — Résumé`;
+}
+
+(async () => {
+  try {
+    const cached = sessionStorage.getItem('profile-v1');
+    if (cached) render(JSON.parse(cached));
+    const res = await fetch('/api/profile');
+    if (!res.ok) throw new Error('profile ' + res.status);
+    const data = await res.json();
+    render(data);
+    try { sessionStorage.setItem('profile-v1', JSON.stringify(data)); } catch {}
+  } catch (e) {
+    if (!sessionStorage.getItem('profile-v1')) {
+      document.getElementById('page').innerHTML =
+        '<div class="loading">⚠ Could not load résumé data. <a href="/">Back to portfolio</a></div>';
+    }
+  }
+})();
+</script>
+</body>
+</html>
