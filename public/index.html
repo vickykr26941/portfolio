@@ -978,25 +978,142 @@ footer a { color: var(--tx2); }
 .copy-btn:hover { border-color: var(--g); color: var(--g); background: var(--g-soft); }
 .copy-btn svg { width: 13px; height: 13px; fill: currentColor; }
 
-/* ── MOBILE FLOATING "ASK" PILL ──────────────────────────────────── */
-.fab-agent {
-  position: fixed; bottom: 18px; right: 18px; z-index: 90;
-  display: none; align-items: center; gap: 7px;
-  padding: 12px 18px; border: none; border-radius: 100px;
-  background: linear-gradient(135deg, var(--g), #13a26c); color: #fff;
-  font-family: var(--mono); font-size: 13px; font-weight: 600;
-  box-shadow: 0 8px 24px rgba(10,138,91,0.35), 0 2px 6px rgba(11,18,32,0.12);
-  cursor: pointer;
-  transform: translateY(80px); opacity: 0;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s;
+/* ══════════════════════════════════════════════════════════════════
+   STICKY CHAT WIDGET — Intercom/Linear-style launcher + panel
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── LAUNCHER ORB ────────────────────────────────────────────────── */
+.chat-launcher {
+  position: fixed; bottom: 22px; right: 22px; z-index: 240;
+  width: 56px; height: 56px; border-radius: 50%;
+  border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--g), #13a26c);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 24px rgba(10,138,91,0.38), 0 2px 8px rgba(11,18,32,0.14);
+  transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.2, 1), box-shadow 0.25s;
 }
-.fab-agent.show { transform: none; opacity: 1; }
-@media (max-width: 759px) { .fab-agent { display: inline-flex; } }
+.chat-launcher:hover { transform: scale(1.07); box-shadow: 0 12px 32px rgba(10,138,91,0.45), 0 3px 10px rgba(11,18,32,0.16); }
+.chat-launcher:active { transform: scale(0.94); }
+.chat-launcher svg { width: 24px; height: 24px; fill: currentColor; position: absolute; transition: opacity 0.18s, transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1); }
+.chat-launcher .ico-close { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+.chat-launcher.open .ico-chat { opacity: 0; transform: rotate(90deg) scale(0.5); }
+.chat-launcher.open .ico-close { opacity: 1; transform: rotate(0) scale(1); }
+/* online dot */
+.chat-launcher::after {
+  content: ''; position: absolute; top: 2px; right: 2px;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: #22c55e; border: 2px solid #fff;
+  animation: hbeat 2.4s ease-in-out infinite;
+}
+.chat-launcher.open::after { display: none; }
+
+/* ── NUDGE BUBBLE ("👋 questions?") ──────────────────────────────── */
+.chat-nudge {
+  position: fixed; bottom: 34px; right: 92px; z-index: 239;
+  display: flex; align-items: center; gap: 9px;
+  background: var(--bg); color: var(--tx);
+  border: 1px solid var(--b1); border-radius: 14px 14px 3px 14px;
+  padding: 11px 14px;
+  font-family: var(--sans-ui); font-size: 13px; font-weight: 500;
+  box-shadow: 0 12px 32px rgba(11,18,32,0.14), 0 2px 8px rgba(11,18,32,0.06);
+  cursor: pointer;
+  transform: translateY(14px) scale(0.92); opacity: 0; pointer-events: none;
+  transform-origin: bottom right;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+  max-width: 240px;
+}
+.chat-nudge.show { transform: none; opacity: 1; pointer-events: auto; }
+.chat-nudge .nudge-x {
+  flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+  border: none; background: var(--s3); color: var(--tx3);
+  font-size: 11px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.chat-nudge .nudge-x:hover { background: var(--b1); color: var(--tx); }
+
+/* ── PANEL ───────────────────────────────────────────────────────── */
+.chat-widget {
+  position: fixed; bottom: 92px; right: 22px; z-index: 238;
+  width: 400px; max-width: calc(100vw - 32px);
+  height: 620px; max-height: calc(100vh - 120px);
+  display: flex; flex-direction: column;
+  background: var(--bg);
+  border: 1px solid var(--b1); border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(11,18,32,0.22), 0 6px 20px rgba(11,18,32,0.10);
+  overflow: hidden;
+  transform-origin: bottom right;
+  transform: translateY(16px) scale(0.92); opacity: 0; pointer-events: none;
+  transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s;
+}
+.chat-widget.open { transform: none; opacity: 1; pointer-events: auto; }
+
+/* header */
+.cw-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: var(--s1); border-bottom: 1px solid var(--b1);
+  flex-shrink: 0;
+}
+.cw-av {
+  width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+  background: linear-gradient(135deg, #eafaf1, #d6f4e3);
+  border: 1px solid rgba(10,138,91,0.25); color: var(--g);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--sans); font-size: 11px; font-weight: 900;
+  position: relative;
+}
+.cw-av::after {
+  content: ''; position: absolute; bottom: -2px; right: -2px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #22c55e; border: 2px solid var(--s1);
+}
+.cw-id { min-width: 0; }
+.cw-name { font-family: var(--sans); font-size: 13.5px; font-weight: 800; color: var(--tx); line-height: 1.2; }
+.cw-sub { font-family: var(--sans-ui); font-size: 10.5px; color: var(--tx3); }
+.cw-actions { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.cw-mode {
+  width: 30px; height: 30px; border-radius: 8px;
+  border: 1px solid transparent; background: transparent;
+  font-size: 14px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.cw-mode:hover { background: var(--s3); }
+.cw-mode[data-active="true"] { background: var(--g-soft); border-color: rgba(10,138,91,0.3); }
+.cw-close {
+  width: 30px; height: 30px; border-radius: 8px; margin-left: 2px;
+  border: none; background: transparent; color: var(--tx3);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.cw-close:hover { background: var(--s3); color: var(--tx); }
+.cw-close svg { width: 15px; height: 15px; fill: currentColor; }
+
+/* chat shell adapts inside the panel */
+.chat-widget .chat-shell {
+  flex: 1; min-height: 0;
+  height: auto; max-height: none;
+  border: none; border-radius: 0; box-shadow: none;
+}
+.chat-widget #messages { padding: 14px 14px 10px; }
+
+/* mobile: full-screen sheet */
+@media (max-width: 519px) {
+  .chat-widget {
+    right: 0; bottom: 0; left: 0;
+    width: 100%; max-width: 100%;
+    height: 100dvh; max-height: 100dvh;
+    border-radius: 0; border: none;
+  }
+  .chat-nudge { right: 86px; bottom: 30px; }
+}
 
 /* ── PRINT: page itself prints clean (resume.html is the real one) ─ */
 @media print {
   nav, .section-nav, .scroll-progress, .agent-section, footer,
-  .fab-agent, .cursor-dot, .cursor-ring, .blob { display: none !important; }
+  .chat-launcher, .chat-widget, .chat-nudge,
+  .cursor-dot, .cursor-ring, .blob { display: none !important; }
   body::before { display: none; }
   section { padding: 24px 0; }
 }
@@ -1008,9 +1125,6 @@ footer a { color: var(--tx2); }
 
 <!-- scroll progress bar (top of viewport) -->
 <div class="scroll-progress"><div class="bar" id="scroll-bar"></div></div>
-
-<!-- mobile floating CTA — appears after scrolling past hero -->
-<button class="fab-agent" id="fab-agent" aria-label="Jump to AI agent">⚡ ask the agent</button>
 
 <!-- left sticky section nav dots (≥1180px) -->
 <aside class="section-nav" aria-label="Section navigation">
@@ -1203,16 +1317,16 @@ footer a { color: var(--tx2); }
 
 </main>
 
-<!-- ── AI AGENT SECTION (bottom, the differentiator) ────────────── -->
+<!-- ── AI AGENT SECTION — capability showcase; cards open the widget ── -->
 <section class="agent-section" id="agent">
   <div class="agent-wrap">
     <div class="agent-cta">
       <div class="badge">⚡ AI AGENT · POWERED BY GROQ</div>
       <h2>tl;dr — <span class="accent">ask the bot.</span></h2>
-      <p>Don't want to scroll? Skip the reading and just <strong>ask anything about Vicky's work, projects, experience, or stack</strong>. The agent has the full profile + live GitHub data. Real-time streaming, no canned answers.</p>
+      <p>Don't want to scroll? Just <strong>ask anything about Vicky's work, projects, experience, or stack</strong> — the chat lives in the corner of every page. The agent has the full profile + live GitHub data. Real-time streaming, no canned answers.</p>
     </div>
 
-    <!-- Feature card grid — modes recruiters can switch into with one click -->
+    <!-- Feature card grid — each card opens the chat widget in that mode -->
     <div class="try-grid" id="try-grid">
       <button class="try-card" data-mode="chat" data-active="true">
         <span class="icn">💬</span>
@@ -1235,47 +1349,78 @@ footer a { color: var(--tx2); }
         <span class="blurb">RAG over Vicky's repos. Ask for code examples, get cited file paths.</span>
       </button>
     </div>
+  </div>
+</section>
 
-    <div class="chat-shell" id="chat-shell" data-mode="chat">
-      <div class="mode-banner" id="mode-banner">
-        <span class="label" id="mode-label"></span>
-        <button id="mode-exit">exit mode</button>
+<!-- ── STICKY CHAT WIDGET (bottom-right, on every scroll position) ── -->
+<div class="chat-widget" id="chat-widget" role="dialog" aria-modal="false" aria-label="Chat with VickyBot" aria-hidden="true">
+  <div class="cw-header">
+    <div class="cw-av">VK</div>
+    <div class="cw-id">
+      <div class="cw-name">VickyBot</div>
+      <div class="cw-sub">online · replies instantly</div>
+    </div>
+    <div class="cw-actions">
+      <button class="cw-mode" data-mode="chat" data-active="true" title="Chat mode">💬</button>
+      <button class="cw-mode" data-mode="voice" title="Voice mode">🎙️</button>
+      <button class="cw-mode" data-mode="resume-match" title="Resume match">📄</button>
+      <button class="cw-close" id="cw-close" aria-label="Close chat">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="chat-shell" id="chat-shell" data-mode="chat">
+    <div class="mode-banner" id="mode-banner">
+      <span class="label" id="mode-label"></span>
+      <button id="mode-exit">exit mode</button>
+    </div>
+    <div id="messages"></div>
+    <div class="sugg-bar" id="sugg">
+      <span class="schip" data-q="Tell me about your current role at Eka.Care">💼 eka.care role</span>
+      <span class="schip" data-q="What is your complete tech stack?">🛠 tech stack</span>
+      <span class="schip" data-q="Show me all your projects with GitHub links">🚀 projects</span>
+      <span class="schip" data-q="What are your competitive programming achievements?">🏆 cp stats</span>
+      <span class="schip" data-q="Tell me about your previous work experience">📋 experience</span>
+      <span class="schip" data-q="How can I contact Vicky?">📬 contact</span>
+    </div>
+    <div class="input-wrap">
+      <div class="input-row">
+        <textarea id="inp" rows="1" placeholder="ask anything about vicky…" maxlength="600"></textarea>
+        <button id="mic" class="mic-btn" title="Speak (voice mode)">
+          <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.92V22h2v-4.08A7 7 0 0019 11h-2z"/></svg>
+        </button>
+        <button id="send" title="Send">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
       </div>
-      <div id="messages"></div>
-      <div class="sugg-bar" id="sugg">
-        <span class="schip" data-q="Tell me about your current role at Eka.Care">💼 eka.care role</span>
-        <span class="schip" data-q="What is your complete tech stack?">🛠 tech stack</span>
-        <span class="schip" data-q="Show me all your projects with GitHub links">🚀 projects</span>
-        <span class="schip" data-q="What are your competitive programming achievements?">🏆 cp stats</span>
-        <span class="schip" data-q="Tell me about your previous work experience">📋 experience</span>
-        <span class="schip" data-q="How can I contact Vicky?">📬 contact</span>
-      </div>
-      <div class="input-wrap">
-        <div class="input-row">
-          <textarea id="inp" rows="1" placeholder="ask anything about vicky…" maxlength="600"></textarea>
-          <button id="mic" class="mic-btn" title="Speak (voice mode)">
-            <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 003-3V5a3 3 0 00-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.92V22h2v-4.08A7 7 0 0019 11h-2z"/></svg>
-          </button>
-          <button id="send" title="Send">
-            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-          </button>
-        </div>
-      </div>
-      <!-- Resume-match mode: replaces input with a JD textarea -->
-      <div class="jd-input-wrap" id="jd-wrap">
-        <label for="jd">paste the job description below ↓</label>
-        <textarea id="jd" placeholder="e.g.&#10;&#10;Senior Backend Engineer @ Acme&#10;5+ yrs Go, distributed systems, AWS&#10;Auth/OIDC experience required..."></textarea>
-        <div class="jd-actions">
-          <button class="jd-go" id="jd-go">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17L4 12l1.41-1.41L9 14.17l9.59-9.59L20 6l-11 11z"/></svg>
-            tailor my resume
-          </button>
-          <button class="jd-cancel" id="jd-cancel">cancel</button>
-        </div>
+    </div>
+    <!-- Resume-match mode: replaces input with a JD textarea -->
+    <div class="jd-input-wrap" id="jd-wrap">
+      <label for="jd">paste the job description below ↓</label>
+      <textarea id="jd" placeholder="e.g.&#10;&#10;Senior Backend Engineer @ Acme&#10;5+ yrs Go, distributed systems, AWS&#10;Auth/OIDC experience required..."></textarea>
+      <div class="jd-actions">
+        <button class="jd-go" id="jd-go">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17L4 12l1.41-1.41L9 14.17l9.59-9.59L20 6l-11 11z"/></svg>
+          tailor my resume
+        </button>
+        <button class="jd-cancel" id="jd-cancel">cancel</button>
       </div>
     </div>
   </div>
-</section>
+</div>
+
+<!-- nudge bubble — appears once, a few seconds in -->
+<div class="chat-nudge" id="chat-nudge" role="button" tabindex="0" aria-label="Open chat">
+  <span>👋 questions? ask my AI — it knows everything</span>
+  <button class="nudge-x" id="nudge-x" aria-label="Dismiss">✕</button>
+</div>
+
+<!-- launcher orb -->
+<button class="chat-launcher" id="chat-launcher" aria-label="Open chat with VickyBot" aria-expanded="false">
+  <svg class="ico-chat" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.58 2 10c0 2.7 1.7 5.1 4.4 6.5L5 22l5.8-3.2c.4 0 .8.1 1.2.1 5.52 0 10-3.58 10-8s-4.48-9-10-9z"/></svg>
+  <svg class="ico-close" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
 
 <footer>
   <div class="ftxt">
@@ -1699,9 +1844,12 @@ function setMode(mode) {
   if (!MODE_META[mode]) return;
   currentMode = mode;
   chatShell.dataset.mode = mode;
-  // active card
+  // active states: showcase cards + widget header tabs
   document.querySelectorAll('.try-card[data-mode]').forEach(c => {
     c.dataset.active = String(c.dataset.mode === mode);
+  });
+  document.querySelectorAll('.cw-mode[data-mode]').forEach(b => {
+    b.dataset.active = String(b.dataset.mode === mode);
   });
   // banner — show only when not default
   const isDefault = mode === 'chat';
@@ -1719,14 +1867,73 @@ function setMode(mode) {
   }
 }
 modeExit.addEventListener('click', () => setMode('chat'));
+
+/* ──────────────────────────────────────────────────────────────────
+   STICKY CHAT WIDGET — open/close + entry points
+   ────────────────────────────────────────────────────────────────── */
+const chatWidget = $('chat-widget');
+const chatLauncher = $('chat-launcher');
+const chatNudge = $('chat-nudge');
+let chatOpen = false;
+let everOpened = false;
+
+function openChat(mode) {
+  everOpened = true;
+  hideNudge(true);
+  chatOpen = true;
+  chatWidget.classList.add('open');
+  chatWidget.setAttribute('aria-hidden', 'false');
+  chatLauncher.classList.add('open');
+  chatLauncher.setAttribute('aria-expanded', 'true');
+  if (mode && MODE_META[mode]) setMode(mode);
+  else setTimeout(() => (currentMode === 'resume-match' ? $('jd') : inp)?.focus(), 250);
+}
+function closeChat() {
+  chatOpen = false;
+  chatWidget.classList.remove('open');
+  chatWidget.setAttribute('aria-hidden', 'true');
+  chatLauncher.classList.remove('open');
+  chatLauncher.setAttribute('aria-expanded', 'false');
+  try { window.speechSynthesis?.cancel(); } catch {}
+}
+function toggleChat() { chatOpen ? closeChat() : openChat(); }
+
+chatLauncher.addEventListener('click', toggleChat);
+$('cw-close').addEventListener('click', closeChat);
+// capture phase → runs before the ⌘K input's own Escape handler,
+// so an open palette absorbs the first Esc and the chat gets the next one
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && chatOpen && !document.querySelector('.cmdk-backdrop.open')) closeChat();
+}, true);
+
+// header mode tabs
+document.querySelectorAll('.cw-mode[data-mode]').forEach(b => {
+  b.addEventListener('click', () => setMode(b.dataset.mode));
+});
+
+// showcase cards open the widget in their mode
 document.querySelectorAll('.try-card[data-mode]').forEach(card => {
   card.addEventListener('click', () => {
     if (card.dataset.soon === 'true') return;
-    setMode(card.dataset.mode);
-    // scroll the chat into view if user clicked from far above
-    chatShell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    openChat(card.dataset.mode);
   });
 });
+
+/* nudge bubble — one gentle prompt, a few seconds in */
+function hideNudge(remember) {
+  chatNudge.classList.remove('show');
+  if (remember) { try { sessionStorage.setItem('nudge-dismissed', '1'); } catch {} }
+}
+setTimeout(() => {
+  let dismissed = false;
+  try { dismissed = !!sessionStorage.getItem('nudge-dismissed'); } catch {}
+  if (!dismissed && !everOpened) chatNudge.classList.add('show');
+}, 5000);
+chatNudge.addEventListener('click', e => {
+  if (e.target.closest('.nudge-x')) { hideNudge(true); return; }
+  openChat();
+});
+chatNudge.addEventListener('keydown', e => { if (e.key === 'Enter') openChat(); });
 
 /* ──────────────────────────────────────────────────────────────────
    CHAT SEND — mode-aware
@@ -1926,13 +2133,14 @@ document.addEventListener('click', e => {
   const w = e.target.closest('.wchip'); if (w) chip(w.dataset.q);
 });
 
-// CTA in hero/nav scrolls to agent + focuses input
+// CTAs in hero/nav open the sticky chat widget directly
 document.querySelectorAll('a[href="#agent"]').forEach(a => {
-  a.addEventListener('click', () => setTimeout(() => inp.focus(), 400));
+  a.addEventListener('click', e => { e.preventDefault(); openChat(); });
 });
 
-// Expose setMode globally so the command palette can drive mode switches
+// Expose for the command palette
 window.setMode = setMode;
+window.openChat = openChat;
 
 /* ══════════════════════════════════════════════════════════════════
    PHASE 2.5 — LINEAR-TIER POLISH SCRIPT
@@ -2106,10 +2314,10 @@ const COMMANDS = [
   { id: 'skills',      ico: '🛠', label: 'Tech stack',               desc: 'jump', fn: () => goto('skills') },
   { id: 'cp',          ico: '🏆', label: 'Competitive programming',  desc: 'jump', fn: () => goto('cp') },
   { id: 'contact',     ico: '📬', label: 'Contact',                  desc: 'jump', fn: () => goto('contact') },
-  { id: 'agent',       ico: '🤖', label: 'AI agent (chat)',          desc: 'jump', fn: () => { goto('agent'); setTimeout(() => inp?.focus(), 500); } },
-  { id: 'mode-chat',   ico: '💬', label: 'Switch to Chat mode',      desc: 'mode', fn: () => { window.setMode?.('chat');         goto('agent'); } },
-  { id: 'mode-voice',  ico: '🎙️', label: 'Switch to Voice mode',     desc: 'mode', fn: () => { window.setMode?.('voice');        goto('agent'); } },
-  { id: 'mode-resume', ico: '📄', label: 'Switch to Resume match',   desc: 'mode', fn: () => { window.setMode?.('resume-match'); goto('agent'); } },
+  { id: 'agent',       ico: '🤖', label: 'Open AI chat',             desc: 'chat', fn: () => window.openChat?.() },
+  { id: 'mode-chat',   ico: '💬', label: 'Chat mode',                desc: 'mode', fn: () => window.openChat?.('chat') },
+  { id: 'mode-voice',  ico: '🎙️', label: 'Voice mode',               desc: 'mode', fn: () => window.openChat?.('voice') },
+  { id: 'mode-resume', ico: '📄', label: 'Resume match',             desc: 'mode', fn: () => window.openChat?.('resume-match') },
   { id: 'copy-email',  ico: '✉️', label: 'Copy email',               desc: 'copy', fn: () => { copyText(PROFILE_EMAIL, 'Email copied'); } },
   { id: 'github',      ico: '🐙', label: 'Open GitHub',              desc: 'open', fn: () => window.open('https://github.com/vickykr26941', '_blank') },
   { id: 'linkedin',    ico: '🔗', label: 'Open LinkedIn',            desc: 'open', fn: () => window.open('https://www.linkedin.com/in/vicky-kumar-a948431a9/', '_blank') },
@@ -2197,17 +2405,6 @@ document.addEventListener('keydown', e => {
   }
 });
 document.getElementById('kbd-hint')?.addEventListener('click', openCmdk);
-
-/* ── MOBILE FAB — appears after the hero scrolls away ────────────── */
-const fab = document.getElementById('fab-agent');
-if (fab) {
-  fab.addEventListener('click', () => { goto('agent'); setTimeout(() => inp?.focus(), 500); });
-  window.addEventListener('scroll', () => {
-    const past = window.scrollY > 600;
-    const nearAgent = document.getElementById('agent').getBoundingClientRect().top < window.innerHeight;
-    fab.classList.toggle('show', past && !nearAgent);
-  }, { passive: true });
-}
 
 /* ── CONSOLE EASTER EGG — for the devs who look ──────────────────── */
 console.log(
