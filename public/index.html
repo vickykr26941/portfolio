@@ -27,7 +27,7 @@
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Vicky Kumar",
-  "jobTitle": "Backend Developer",
+  "jobTitle": "SDE-2 (Backend Developer)",
   "worksFor": { "@type": "Organization", "name": "Eka.Care" },
   "address": { "@type": "PostalAddress", "addressLocality": "Bangalore", "addressCountry": "IN" },
   "email": "mailto:vickykr26941@gmail.com",
@@ -429,74 +429,6 @@ section { max-width: 1100px; margin: 0 auto; padding: 64px 24px; }
 .contact-info { min-width: 0; flex: 1; }
 .contact-label { font-size: 10.5px; color: var(--tx3); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-bottom: 2px; }
 .contact-val { font-size: 13px; color: var(--tx); font-weight: 500; word-break: break-all; }
-
-/* ── AGENT BANNER + CHAT ─────────────────────────────────────────── */
-.agent-section {
-  background: linear-gradient(180deg, var(--s1), var(--bg));
-  border-top: 1px solid var(--b1);
-  padding: 64px 0 80px;
-  position: relative; z-index: 1;
-}
-.agent-wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-@media (max-width: 600px) { .agent-wrap { padding: 0 18px; } }
-.agent-cta {
-  text-align: center; margin-bottom: 28px;
-}
-.agent-cta .badge {
-  display: inline-block; padding: 5px 14px;
-  background: var(--g-soft); color: var(--g);
-  border: 1px solid rgba(10,138,91,0.30); border-radius: 100px;
-  font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-  margin-bottom: 14px;
-}
-.agent-cta h2 {
-  font-family: var(--sans); font-weight: 900;
-  font-size: clamp(26px, 5vw, 38px); line-height: 1.15; color: var(--tx);
-  letter-spacing: -0.8px; margin-bottom: 10px;
-}
-.agent-cta h2 .accent { color: var(--g); }
-.agent-cta p {
-  color: var(--tx2); font-size: 14px; line-height: 1.7;
-  max-width: 540px; margin: 0 auto;
-}
-.agent-cta p strong { color: var(--tx); font-weight: 600; }
-
-/* ── FEATURE CARDS (above chat) ──────────────────────────────────── */
-.try-grid {
-  display: grid; gap: 10px;
-  grid-template-columns: 1fr;
-  margin-bottom: 18px;
-}
-@media (min-width: 700px) { .try-grid { grid-template-columns: repeat(4, 1fr); } }
-@media (min-width: 540px) and (max-width: 699px) { .try-grid { grid-template-columns: repeat(2, 1fr); } }
-.try-card {
-  background: var(--s2); border: 1px solid var(--b1); border-radius: var(--r);
-  padding: 14px 14px 12px; cursor: pointer; transition: all 0.18s;
-  display: flex; flex-direction: column; gap: 6px;
-  position: relative; box-shadow: var(--shadow);
-  text-align: left;
-}
-.try-card:hover { border-color: var(--g); transform: translateY(-2px); box-shadow: var(--shadow-h); }
-.try-card[data-active="true"] {
-  border-color: var(--g); background: var(--g-soft);
-  box-shadow: 0 0 0 3px rgba(10,138,91,0.10);
-}
-.try-card[data-soon="true"] { cursor: not-allowed; opacity: 0.55; }
-.try-card[data-soon="true"]:hover { transform: none; border-color: var(--b1); box-shadow: var(--shadow); }
-.try-card .icn { font-size: 22px; line-height: 1; }
-.try-card .ttl {
-  font-family: var(--sans); font-weight: 800; font-size: 13.5px; color: var(--tx);
-  display: flex; align-items: center; gap: 6px;
-}
-.try-card .blurb { font-size: 11.5px; color: var(--tx2); line-height: 1.5; }
-.try-card .pill {
-  display: inline-block; margin-left: auto;
-  font-size: 9px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
-  padding: 2px 7px; border-radius: 100px;
-  background: var(--y); background: rgba(192,132,0,0.12); color: var(--y);
-  border: 1px solid rgba(192,132,0,0.30);
-}
-.try-card .pill.live { background: var(--g-soft); color: var(--g); border-color: rgba(10,138,91,0.30); }
 
 /* ── MODE BANNER (top of chat shell) ─────────────────────────────── */
 .mode-banner {
@@ -938,9 +870,7 @@ footer a { color: var(--tx2); }
 .exp-bullets li,
 .cp-highlights li,
 .edu-deg,
-.try-card .blurb,
 .welcome-card p,
-.agent-cta p,
 .bubble {
   font-family: var(--sans-ui);
   letter-spacing: 0.01em;
@@ -1109,9 +1039,9 @@ footer a { color: var(--tx2); }
   .chat-nudge { right: 86px; bottom: 30px; }
 }
 
-/* ── PRINT: page itself prints clean (resume.html is the real one) ─ */
+/* ── PRINT: page itself prints clean (the PDF résumé is the real one) ─ */
 @media print {
-  nav, .section-nav, .scroll-progress, .agent-section, footer,
+  nav, .section-nav, .scroll-progress, footer,
   .chat-launcher, .chat-widget, .chat-nudge,
   .cursor-dot, .cursor-ring, .blob { display: none !important; }
   body::before { display: none; }
@@ -1136,7 +1066,6 @@ footer a { color: var(--tx2); }
   <button class="section-nav-dot" data-target="repos"      data-label="repos"></button>
   <button class="section-nav-dot" data-target="skills"     data-label="skills"></button>
   <button class="section-nav-dot" data-target="contact"    data-label="contact"></button>
-  <button class="section-nav-dot" data-target="agent"      data-label="agent"></button>
 </aside>
 
 <!-- ── NAV ──────────────────────────────────────────────────────── -->
@@ -1183,7 +1112,7 @@ footer a { color: var(--tx2); }
           <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.58 2 10c0 2.7 1.7 5.1 4.4 6.5L5 22l5.8-3.2c.4 0 .8.1 1.2.1 5.52 0 10-3.58 10-8s-4.48-9-10-9z"/></svg>
           chat with my AI agent
         </a>
-        <a href="/resume.html" target="_blank" rel="noopener" class="btn btn-secondary">
+        <a href="/Vicky_Kumar_Resume.pdf" target="_blank" rel="noopener" class="btn btn-secondary">
           <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
           résumé
         </a>
@@ -1225,7 +1154,7 @@ footer a { color: var(--tx2); }
   <div class="section-head">
     <div class="section-tag">&gt; ps aux | grep current_role</div>
     <h2 class="section-title">currently building</h2>
-    <p class="section-sub">healthcare infrastructure — auth platforms, AI agents, voice-to-text pipelines.</p>
+    <p class="section-sub">EkaScribe — AI medical scribe: voice-to-text pipelines, developer APIs &amp; SDKs, AI agents.</p>
   </div>
   <div id="current-role-mount">
     <div class="current-role-card"><div class="skel skel-line" style="width:60%"></div><div class="skel skel-line" style="width:40%"></div><div class="skel skel-line" style="width:80%"></div></div>
@@ -1317,41 +1246,6 @@ footer a { color: var(--tx2); }
 
 </main>
 
-<!-- ── AI AGENT SECTION — capability showcase; cards open the widget ── -->
-<section class="agent-section" id="agent">
-  <div class="agent-wrap">
-    <div class="agent-cta">
-      <div class="badge">⚡ AI AGENT · POWERED BY GROQ</div>
-      <h2>tl;dr — <span class="accent">ask the bot.</span></h2>
-      <p>Don't want to scroll? Just <strong>ask anything about Vicky's work, projects, experience, or stack</strong> — the chat lives in the corner of every page. The agent has the full profile + live GitHub data. Real-time streaming, no canned answers.</p>
-    </div>
-
-    <!-- Feature card grid — each card opens the chat widget in that mode -->
-    <div class="try-grid" id="try-grid">
-      <button class="try-card" data-mode="chat" data-active="true">
-        <span class="icn">💬</span>
-        <span class="ttl">Ask anything <span class="pill live">live</span></span>
-        <span class="blurb">Free-form Q&amp;A. Streaming replies grounded in real profile + GitHub data.</span>
-      </button>
-      <button class="try-card" data-mode="voice">
-        <span class="icn">🎙️</span>
-        <span class="ttl">Voice mode <span class="pill live">live</span></span>
-        <span class="blurb">Speak your question. Bot replies out loud. Browser-native, no setup.</span>
-      </button>
-      <button class="try-card" data-mode="resume-match">
-        <span class="icn">📄</span>
-        <span class="ttl">Resume match <span class="pill live">live</span></span>
-        <span class="blurb">Paste a JD. Get a one-page tailored resume + honest fit verdict.</span>
-      </button>
-      <button class="try-card" data-soon="true" title="Coming next — RAG over Vicky's GitHub code">
-        <span class="icn">🔍</span>
-        <span class="ttl">Code search <span class="pill">soon</span></span>
-        <span class="blurb">RAG over Vicky's repos. Ask for code examples, get cited file paths.</span>
-      </button>
-    </div>
-  </div>
-</section>
-
 <!-- ── STICKY CHAT WIDGET (bottom-right, on every scroll position) ── -->
 <div class="chat-widget" id="chat-widget" role="dialog" aria-modal="false" aria-label="Chat with VickyBot" aria-hidden="true">
   <div class="cw-header">
@@ -1427,7 +1321,7 @@ footer a { color: var(--tx2); }
     built by <strong style="color:var(--tx)">vicky kumar</strong> · powered by
     <span class="accent">groq</span> + <span class="accent">cloudflare pages</span> ·
     <a href="https://github.com/vickykr26941/portfolio-agent">source</a> ·
-    <a href="/resume.html">résumé</a> · <span id="last-updated"></span>
+    <a href="/Vicky_Kumar_Resume.pdf" target="_blank" rel="noopener">résumé</a> · <span id="last-updated"></span>
   </div>
 </footer>
 
@@ -1844,10 +1738,7 @@ function setMode(mode) {
   if (!MODE_META[mode]) return;
   currentMode = mode;
   chatShell.dataset.mode = mode;
-  // active states: showcase cards + widget header tabs
-  document.querySelectorAll('.try-card[data-mode]').forEach(c => {
-    c.dataset.active = String(c.dataset.mode === mode);
-  });
+  // active state on widget header tabs
   document.querySelectorAll('.cw-mode[data-mode]').forEach(b => {
     b.dataset.active = String(b.dataset.mode === mode);
   });
@@ -1909,14 +1800,6 @@ document.addEventListener('keydown', e => {
 // header mode tabs
 document.querySelectorAll('.cw-mode[data-mode]').forEach(b => {
   b.addEventListener('click', () => setMode(b.dataset.mode));
-});
-
-// showcase cards open the widget in their mode
-document.querySelectorAll('.try-card[data-mode]').forEach(card => {
-  card.addEventListener('click', () => {
-    if (card.dataset.soon === 'true') return;
-    openChat(card.dataset.mode);
-  });
 });
 
 /* nudge bubble — one gentle prompt, a few seconds in */
@@ -2177,7 +2060,7 @@ if (isFinePointer && !reduceMotion) {
   document.addEventListener('mouseenter', () => document.body.classList.remove('cursor-hidden'));
 
   // Hover state — delegated so dynamic content (repos, projects loaded from API) also triggers
-  const INTERACTIVE = 'a, button, .try-card, .repo, .schip, .wchip, .section-nav-dot, [data-cursor="hover"]';
+  const INTERACTIVE = 'a, button, .repo, .schip, .wchip, .section-nav-dot, [data-cursor="hover"]';
   document.addEventListener('mouseover', e => {
     if (e.target.closest(INTERACTIVE)) cursorRing.classList.add('hover');
   });
@@ -2234,7 +2117,7 @@ window.addEventListener('resize', onScrollPolish);
 onScrollPolish();
 
 /* ── REVEAL-ON-SCROLL ────────────────────────────────────────────── */
-const revealSelectors = 'section > .section-head, .stats, .project, .repo, .skill-cat, .cp-card, .edu, .contact-card, .exp, .current-role-card, .try-card, .about-text';
+const revealSelectors = 'section > .section-head, .stats, .project, .repo, .skill-cat, .cp-card, .edu, .contact-card, .exp, .current-role-card, .about-text';
 function bindReveal() {
   document.querySelectorAll(revealSelectors).forEach(el => {
     if (el.dataset.reveal === 'bound') return;
@@ -2322,7 +2205,7 @@ const COMMANDS = [
   { id: 'github',      ico: '🐙', label: 'Open GitHub',              desc: 'open', fn: () => window.open('https://github.com/vickykr26941', '_blank') },
   { id: 'linkedin',    ico: '🔗', label: 'Open LinkedIn',            desc: 'open', fn: () => window.open('https://www.linkedin.com/in/vicky-kumar-a948431a9/', '_blank') },
   { id: 'source',      ico: '📂', label: 'View this site\'s source', desc: 'open', fn: () => window.open('https://github.com/vickykr26941/portfolio-agent', '_blank') },
-  { id: 'resume',      ico: '📑', label: 'Download résumé (PDF)',    desc: 'open', fn: () => window.open('/resume.html', '_blank') },
+  { id: 'resume',      ico: '📑', label: 'Download résumé (PDF)',    desc: 'open', fn: () => window.open('/Vicky_Kumar_Resume.pdf', '_blank') },
 ];
 function goto(id) {
   const el = document.getElementById(id);

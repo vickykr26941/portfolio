@@ -1,9 +1,9 @@
 {
   "identity": {
     "name": "Vicky Kumar",
-    "title": "Backend Developer",
+    "title": "SDE-2 · Backend Developer",
     "location": "Bangalore, India",
-    "summary": "Backend Developer specializing in Go, Python, Java, and LLM/AI agent workflows. I build scalable distributed systems, authentication platforms, event-driven pipelines, and AI-powered products. Currently at Eka.Care building healthcare infrastructure.",
+    "summary": "Backend engineer (SDE-2) specializing in Go, Python, Java, and LLM/AI agent workflows. I build scalable distributed systems, authentication platforms, event-driven pipelines, and AI-powered products. Currently at Eka.Care building EkaScribe — the AI medical scribe platform.",
     "tagline": "I build the infrastructure that powers intelligent systems — from auth platforms to AI agents."
   },
   "contact": {
@@ -15,24 +15,35 @@
   "experience": [
     {
       "company": "Eka.Care",
-      "role": "Backend Developer",
+      "role": "SDE-2 (Backend Developer)",
+      "tech": ["GoLang", "Python", "AWS", "SNS/SQS", "Lambda", "WebSockets", "MCP"],
+      "period": "Oct 2025 – Present",
+      "location": "Bangalore, India",
+      "highlights": [
+        "Architected the EkaScribe platform backend — session-based APIs powering doctor dictation and doctor-patient consultation transcription (developer.eka.care/ekascribe)",
+        "Designed the event-driven voice-to-text pipeline on AWS SNS, SQS, S3, and Lambda, with webhook and polling result delivery",
+        "Shipped EkaScribe's public developer platform — Sessions, Templates, and Documents REST APIs with webhook and polling result delivery, plus a Python SDK",
+        "Built multilingual transcription support for 10+ Indian languages with automatic detection, and markdown-templated outputs (SOAP notes, specialty notes, discharge summaries) with FHIR-bundle compatibility",
+        "Optimized end-to-end audio processing latency from 20 seconds to 5-10 seconds per consultation",
+        "Contributed to 40%+ month-over-month growth in daily Scribe consultations",
+        "Built MCP servers exposing secure drug database search APIs with auth, rate limiting, and audit logging",
+        "Developed an AI Agent integrated with ChatGPT to enable AI-assisted workflows for EMR and Scribe",
+        "Led integrations with Medanta, Cliniik, and NIC (Government of India)"
+      ]
+    },
+    {
+      "company": "Eka.Care",
+      "role": "SDE-1 (Backend Developer)",
       "tech": ["GoLang", "Gin", "Python", "Django", "AWS"],
-      "period": "Nov 2024 – Present",
+      "period": "Nov 2024 – Sep 2025",
       "location": "Bangalore, India",
       "highlights": [
         "Architected a centralized OAuth2 + OpenID Connect authentication platform powering Eka Care EMR, PHR, Scribe, and partner products",
         "Built full OAuth2/OIDC provider supporting Login with Google, Apple, and other identity providers",
         "Designed an Auth Console for managing OAuth clients, API keys, scopes, and access policies",
-        "Developed an AI Agent integrated with ChatGPT to enable AI-assisted workflows for EMR and Scribe",
         "Created AWS Lambda Authorizers integrated with API Gateway for request authentication",
         "Implemented CloudFront Functions for dynamic redirects across products and login flows",
-        "Designed a rate-limiting adapter service to mitigate abuse and DDoS using mobile, email, and OAuth identities",
-        "Architected the Scribe platform backend for doctor dictation and doctor-patient consultations",
-        "Designed an event-driven voice-to-text pipeline using AWS SNS, SQS, S3, and Lambda",
-        "Built MCP servers exposing secure drug database search APIs with auth, rate limiting, and audit logging",
-        "Optimized end-to-end audio processing latency from 20 seconds to 5-10 seconds per consultation",
-        "Contributed to 40%+ month-over-month growth in daily Scribe consultations",
-        "Led integrations with Medanta, Cliniik, and NIC (Government of India)"
+        "Designed a rate-limiting adapter service to mitigate abuse and DDoS using mobile, email, and OAuth identities"
       ]
     },
     {
