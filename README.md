@@ -2,7 +2,7 @@
 
 A streaming chatbot that answers questions about Vicky Kumar's portfolio.
 Frontend + backend both run on **Cloudflare Pages** (Pages Functions for the API).
-LLM inference is powered by **Groq** (Llama 3.3 70B) with token streaming.
+LLM inference is powered by **Groq** (gpt-oss-120b) with token streaming.
 Live GitHub data is fetched at request time and cached at the edge for 5 minutes.
 
 ```
@@ -52,7 +52,7 @@ Your site goes live at `https://vicky-portfolio-agent.pages.dev`.
 | Name           | Required | Where set                                  |
 | -------------- | -------- | ------------------------------------------ |
 | `GROQ_API_KEY` | yes      | `.dev.vars` locally, Pages secrets in prod |
-| `GROQ_MODEL`   | no       | defaults to `llama-3.3-70b-versatile`      |
+| `GROQ_MODEL`   | no       | defaults to `openai/gpt-oss-120b`          |
 | `GITHUB_TOKEN` | no       | avoids GitHub rate limits                  |
 
 ## Typecheck
