@@ -19,8 +19,12 @@ const MODE_MAX_TOKENS: Record<ChatMode, number> = {
   "resume-match": 1200,
 };
 
+// Groq retired the llama-3.3 chat models; gpt-oss-120b is the current
+// flagship on the free tier. It's a reasoning model — reasoning arrives
+// in a separate `reasoning` field that our streaming loop ignores, and
+// reasoning_effort "low" keeps replies snappy for chat.
 export function defaultModel(env: Env): string {
-  return env.GROQ_MODEL || "llama-3.3-70b-versatile";
+  return env.GROQ_MODEL || "openai/gpt-oss-120b";
 }
 
 /** Profile data block shared by every mode's system prompt. */
@@ -265,5 +269,9 @@ export function completionParamsForMode(mode: ChatMode = "chat") {
   return {
     max_tokens: MODE_MAX_TOKENS[mode] ?? MODE_MAX_TOKENS.chat,
     temperature: TEMPERATURE,
-  };
+    // gpt-oss-specific: keep hidden reasoning short so streaming starts fast.
+    // Groq passes unknown params through; harmless if a non-reasoning model
+    // is configured via GROQ_MODEL.
+    reasoning_effort: "low",
+  } as Record<string, unknown> as { max_tokens: number; temperature: number };
 }

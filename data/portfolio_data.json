@@ -21,6 +21,7 @@
       "location": "Bangalore, India",
       "highlights": [
         "Architected the EkaScribe platform backend — session-based APIs powering doctor dictation and doctor-patient consultation transcription (developer.eka.care/ekascribe)",
+        "Architected and implemented Vaarta — an open-source monorepo meeting-notes scribe application for IndiaAI (BharatAI), enabling government officials to record meetings and convert discussions into structured notes in multiple formats (github.com/eka-care/vaarta · vaarta.bharatai.gov.in)",
         "Designed the event-driven voice-to-text pipeline on AWS SNS, SQS, S3, and Lambda, with webhook and polling result delivery",
         "Shipped EkaScribe's public developer platform — Sessions, Templates, and Documents REST APIs with webhook and polling result delivery, plus a Python SDK",
         "Built multilingual transcription support for 10+ Indian languages with automatic detection, and markdown-templated outputs (SOAP notes, specialty notes, discharge summaries) with FHIR-bundle compatibility",
